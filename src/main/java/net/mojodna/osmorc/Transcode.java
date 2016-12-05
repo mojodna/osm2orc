@@ -107,9 +107,7 @@ public class Transcode {
                 tags.childCount += tags.lengths[row];
                 tags.keys.ensureSize(tags.childCount, tags.offsets[row] != 0);
                 tags.values.ensureSize(tags.childCount, tags.offsets[row] != 0);
-            }
 
-            synchronized (tags) {
                 int i = 0;
                 for (Map.Entry<String, String> kv : OsmModelUtil.getTagsAsMap(entity).entrySet()) {
                     ((BytesColumnVector) tags.keys).setVal((int) tags.offsets[row] + i, kv.getKey().getBytes());
@@ -129,6 +127,18 @@ public class Transcode {
             version.vector[row] = metadata.getVersion();
             visible.vector[row] = 1;
 
+            lat.set(row, (HiveDecimal) null);
+            lon.set(row, (HiveDecimal) null);
+            synchronized (nds) {
+                nds.offsets[row] = nds.childCount;
+                nds.lengths[row] = 0;
+            }
+
+            synchronized (members) {
+                members.offsets[row] = members.childCount;
+                members.lengths[row] = 0;
+            }
+
             switch (container.getType()) {
                 default:
                 case Node:
@@ -143,7 +153,6 @@ public class Transcode {
                     OsmWay way = (OsmWay) entity;
 
                     synchronized (nds) {
-                        nds.offsets[row] = nds.childCount;
                         nds.lengths[row] = way.getNumberOfNodes();
                         nds.childCount += nds.lengths[row];
                         nds.child.ensureSize(nds.childCount, nds.offsets[row] != 0);
@@ -161,7 +170,6 @@ public class Transcode {
                     OsmRelation relation = (OsmRelation) entity;
 
                     synchronized (members) {
-                        members.offsets[row] = members.childCount;
                         members.lengths[row] = relation.getNumberOfMembers();
                         members.childCount += members.lengths[row];
                         members.child.ensureSize(members.childCount, members.offsets[row] != 0);
