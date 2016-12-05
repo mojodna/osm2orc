@@ -54,7 +54,7 @@ public class Transcode {
         // id can be omitted if elements are assumed to be sorted
         // user can be omitted if separate user mappings are kept (to produce a list of uids from a list of usernames)
 //        conf.set(OrcConf.BLOOM_FILTER_COLUMNS.getAttribute(), "tags,type");
-        Writer writer = OrcFile.createWriter(new Path("osm.orc"),
+        Writer writer = OrcFile.createWriter(new Path(args[1]),
                 OrcFile.writerOptions(conf).setSchema(schema));
 
         InputStream input = new FileInputStream(args[0]);
