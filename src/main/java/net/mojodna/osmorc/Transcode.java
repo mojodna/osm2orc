@@ -87,24 +87,24 @@ public class Transcode {
         Writer writer = OrcFile.createWriter(new Path(args[1]),
                 OrcFile.writerOptions(conf).setSchema(schema));
 
-        writer.addUserMetadata("bbox", null);
-        // TODO osm.schema.version = 0.6
-        writer.addUserMetadata("OsmSchema-V0.6", null);
-        writer.addUserMetadata("required_features", null);
-        writer.addUserMetadata("HistoricalInformation", null);
-        writer.addUserMetadata("has_metadata", null);
-        writer.addUserMetadata("Sort.Type_then_ID", null);
-        writer.addUserMetadata("Sort.Geographic", null);
-        // see "What are the replication fields for?" in https://wiki.openstreetmap.org/wiki/PBF_Format
-        writer.addUserMetadata("replication_timestamp", null);
-        writer.addUserMetadata("replication_sequence_number", null);
-        writer.addUserMetadata("replication_base_url", null);
-        // to allow conversion of decimals into ints and avoid hard-coding the precision
-        writer.addUserMetadata("granularity", null);
-        // false easting
-        writer.addUserMetadata("x_offset", null);
-        // false northing
-        writer.addUserMetadata("y_offset", null);
+//        writer.addUserMetadata("bbox", null);
+//        // TODO osm.schema.version = 0.6
+//        writer.addUserMetadata("OsmSchema-V0.6", null);
+//        writer.addUserMetadata("required_features", null);
+//        writer.addUserMetadata("HistoricalInformation", null);
+//        writer.addUserMetadata("has_metadata", null);
+//        writer.addUserMetadata("Sort.Type_then_ID", null);
+//        writer.addUserMetadata("Sort.Geographic", null);
+//        // see "What are the replication fields for?" in https://wiki.openstreetmap.org/wiki/PBF_Format
+//        writer.addUserMetadata("replication_timestamp", null);
+//        writer.addUserMetadata("replication_sequence_number", null);
+//        writer.addUserMetadata("replication_base_url", null);
+//        // to allow conversion of decimals into ints and avoid hard-coding the precision
+//        writer.addUserMetadata("granularity", null);
+//        // false easting
+//        writer.addUserMetadata("x_offset", null);
+//        // false northing
+//        writer.addUserMetadata("y_offset", null);
 
 
         InputStream input = new FileInputStream(args[0]);
@@ -186,6 +186,9 @@ public class Transcode {
                 members.lengths[row] = 0;
             }
 
+            // TODO changeset, in which case lat/lon need to be zeroed out
+            // changesets also include discussion, which is a list of comments (date, uid, user, text)
+            // changesets can be open/closed, have a created_at (same as timestamp?), and a bbox (4 values)
             switch (container.getType()) {
                 default:
                 case Node:
