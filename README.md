@@ -73,7 +73,7 @@ ways_in_bbox AS (
   FROM exploded_ways
   GROUP BY id
 )
--- relations are more difficult; ways must be reassembled up recursively
+-- relations are more difficult; ways must be reassembled recursively
 SELECT
   id,
   'node' type,
