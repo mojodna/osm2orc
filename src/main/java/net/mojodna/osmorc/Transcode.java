@@ -36,7 +36,6 @@ import static org.apache.orc.TypeDescription.createDecimal;
 import static org.apache.orc.TypeDescription.createList;
 import static org.apache.orc.TypeDescription.createLong;
 import static org.apache.orc.TypeDescription.createMap;
-import static org.apache.orc.TypeDescription.createShort;
 import static org.apache.orc.TypeDescription.createString;
 import static org.apache.orc.TypeDescription.createStruct;
 import static org.apache.orc.TypeDescription.createTimestamp;
@@ -58,7 +57,7 @@ public class Transcode {
                 ))
                 .addField("members", createList(
                         createStruct()
-                                .addField("type", createShort())
+                                .addField("type", createString())
                                 .addField("ref", createLong())
                                 .addField("role", createString())
                 ))
@@ -233,23 +232,7 @@ public class Transcode {
                         for (int j = 0; j < relation.getNumberOfMembers(); j++) {
                             StructColumnVector membersStruct = (StructColumnVector) members.child;
 
-                            int memberType = -1;
-
-                            switch (relation.getMember(j).getType()) {
-                                case Node:
-                                    memberType = 0;
-                                    break;
-
-                                case Way:
-                                    memberType = 1;
-                                    break;
-
-                                case Relation:
-                                    memberType = 2;
-                                    break;
-                            }
-
-                            ((LongColumnVector) membersStruct.fields[0]).vector[(int) members.offsets[row] + j] = memberType;
+                            ((BytesColumnVector) membersStruct.fields[0]).setVal((int) members.offsets[row] + j, relation.getMember(j).getType().toString().toLowerCase().getBytes());
                             ((LongColumnVector) membersStruct.fields[1]).vector[(int) members.offsets[row] + j] = relation.getMember(j).getId();
                             ((BytesColumnVector) membersStruct.fields[2]).setVal((int) members.offsets[row] + j, relation.getMember(j).getRole().getBytes());
                         }
