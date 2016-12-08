@@ -17,6 +17,8 @@ STORED AS ORCFILE
 LOCATION 's3://osm.mojodna.net/planet-2016-11-30/';
 ```
 
+**NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
+
 Re-assemble ways
 
 ```sql
