@@ -1,3 +1,13 @@
+# OSM2ORC
+
+Transcodes [OSM PBF files](https://wiki.openstreetmap.org/wiki/PBF_Format) to [ORC](http://orc.apache.org/).
+
+## Schema
+
+The following schema should also work with Presto, Spark, and Hive (the location protocol may need to be changed to `s3a:` and `hadoop-aws-2.7.3.jar` and `aws-java-sdk-1.7.4.jar` (*not* the latest) must be available in your `CLASSPATH`).
+
+**IF YOU'RE NOT RUNNING IN THE AWS `us-east-1` REGION, PLEASE COPY `s3://osm.mojodna.net/planet-2016-11-30/planet-2016-11-30.orc` INTO YOUR OWN BUCKET / HDFS**
+
 ```sql
 CREATE EXTERNAL TABLE planet (
     id BIGINT,
@@ -19,7 +29,9 @@ LOCATION 's3://osm.mojodna.net/planet-2016-11-30/';
 
 **NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
 
-Re-assemble ways
+## Sample Queries
+
+### Re-assemble Ways
 
 ```sql
 WITH nodes AS (
