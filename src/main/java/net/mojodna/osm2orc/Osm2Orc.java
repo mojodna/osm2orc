@@ -1,4 +1,4 @@
-package net.mojodna.osmorc;
+package net.mojodna.osm2orc;
 
 import de.topobyte.osm4j.core.access.OsmIterator;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
@@ -40,7 +40,7 @@ import static org.apache.orc.TypeDescription.createString;
 import static org.apache.orc.TypeDescription.createStruct;
 import static org.apache.orc.TypeDescription.createTimestamp;
 
-public class Transcode {
+public class Osm2Orc {
     public static void main(String[] args) throws Exception {
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
