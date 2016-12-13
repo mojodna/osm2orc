@@ -19,6 +19,7 @@ dependencies {
     compile 'de.topobyte:osm4j-core:0.0.18'
     compile group: 'org.apache.orc', name: 'orc-core', version: '1.2.2'
     compile group: 'org.apache.orc', name: 'orc-tools', version: '1.2.2'
+    compile 'org.openstreetmap.osmosis:osmosis-core:0.44.1'
 }
 
 mainClassName = "net.mojodna.osm2orc.Osm2Orc"
