@@ -1,4 +1,4 @@
-package net.mojodna.osm2orc;
+package net.mojodna.osm2orc.osmosis;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;

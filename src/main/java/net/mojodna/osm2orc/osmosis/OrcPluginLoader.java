@@ -1,4 +1,4 @@
-package net.mojodna.osm2orc;
+package net.mojodna.osm2orc.osmosis;
 
 import org.openstreetmap.osmosis.core.pipeline.common.TaskManagerFactory;
 import org.openstreetmap.osmosis.core.plugin.PluginLoader;
