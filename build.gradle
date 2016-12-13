@@ -14,11 +14,9 @@ repositories {
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'de.topobyte:osm4j-pbf:0.0.7'
     compile 'de.topobyte:osm4j-core:0.0.18'
     compile group: 'org.apache.orc', name: 'orc-core', version: '1.2.2'
-    compile group: 'org.apache.orc', name: 'orc-tools', version: '1.2.2'
     compile 'org.openstreetmap.osmosis:osmosis-core:0.44.1'
 }
 
