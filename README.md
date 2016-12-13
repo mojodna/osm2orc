@@ -103,4 +103,25 @@ SELECT
 FROM ways_in_bbox
 ```
 
-`OSMOSIS_HOME` is `/usr/local/opt/osmosis/libexec/lib/default/`
+## Osmosis Plugin
+
+```bash
+gradle jar
+cp builds/libs/osm2orc-1.0-SNAPSHOT.jar $OSMOSIS_HOME/lib/default
+
+osmosis --rbf ~/src/mojodna/osm2orc/delaware-latest.osm.pbf --write-orc delaware.orc
+```
+
+The following dependencies (available from a `distZip`) also need to be copied to `$OSMOSIS_HOME/lib/default` (TODO create a plugin jar that only contains osm2orc + these):
+
+* `aircompressor-0.3.jar`
+* `commons-collections-3.2.2.jar`
+* `commons-configuration-1.6.jar`
+* `commons-lang-2.6.jar`
+* `guava-16.0.1.jar`
+* `hadoop-auth-2.6.4.jar`
+* `hadoop-common-2.6.4.jar`
+* `hive-storage-api-2.1.1.2-pre-orc.jar`
+* `orc-core-1.2.2.jar)`
+
+`OSMOSIS_HOME` when installed via [Homebrew](https://brew.sh) is `/usr/local/opt/osmosis/libexec`.
