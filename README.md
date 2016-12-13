@@ -102,3 +102,5 @@ SELECT
   coordinates
 FROM ways_in_bbox
 ```
+
+`OSMOSIS_HOME` is `/usr/local/opt/osmosis/libexec/lib/default/`
