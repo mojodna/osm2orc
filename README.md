@@ -165,6 +165,7 @@ gradle jar
 cp builds/libs/osm2orc-1.0-SNAPSHOT.jar $OSMOSIS_HOME/lib/default
 
 osmosis --rbf ~/src/mojodna/osm2orc/delaware-latest.osm.pbf --write-orc delaware.orc
+osmosis --read-xml-change 694.osc.gz --convert-change-to-full-history --write-orc 694.osc.orc
 ```
 
 The following dependencies (available from a `distZip`) also need to be copied to `$OSMOSIS_HOME/lib/default` (TODO create a plugin jar that only contains osm2orc + these):
