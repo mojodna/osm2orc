@@ -138,8 +138,11 @@ public class OrcWriter implements Sink {
             user.setVal(row, entity.getUser().getName().getBytes());
 
             version.vector[row] = entity.getVersion();
-            // TODO
+
             visible.vector[row] = 1;
+            if (entity.getMetaTags().get("visible") == Boolean.FALSE) {
+                visible.vector[row] = 0;
+            }
 
             nds.offsets[row] = nds.childCount;
             nds.lengths[row] = 0;

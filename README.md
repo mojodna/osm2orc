@@ -103,6 +103,61 @@ SELECT
 FROM ways_in_bbox
 ```
 
+Get information about the most recent version of all non-deleted entities:
+
+```sql
+SELECT planet.*
+FROM seattle_history planet
+INNER JOIN (
+  SELECT id,
+         type,
+         MAX(version) version
+  FROM seattle_history
+  GROUP BY type, id
+) latest
+  ON planet.id = latest.id
+    AND planet.version = latest.version
+    AND planet.type = latest.type
+WHERE planet.visible = true
+ORDER BY
+  CASE planet.type
+    WHEN 'node' THEN 1
+    WHEN 'way' THEN 2
+    WHEN 'relation' THEN 3
+    ELSE 4
+  END,
+  planet.id
+```
+
+Get the number of deleted entities:
+
+```sql
+WITH latest AS (
+  SELECT planet.*
+  FROM seattle_history planet
+  INNER JOIN (
+    SELECT id,
+           type,
+           MAX(version) version
+    FROM seattle_history
+    GROUP BY type, id
+  ) latest
+    ON planet.id = latest.id
+      AND planet.version = latest.version
+      AND planet.type = latest.type
+  WHERE planet.visible = false
+  ORDER BY
+    CASE planet.type
+      WHEN 'node' THEN 1
+      WHEN 'way' THEN 2
+      WHEN 'relation' THEN 3
+      ELSE 4
+    END,
+    planet.id
+)
+SELECT count(*) FROM latest
+```
+
 ## Osmosis Plugin
 
 ```bash
