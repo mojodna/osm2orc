@@ -1,21 +1,13 @@
 package net.mojodna.osm2orc.standalone.parser;
 
 
-import net.mojodna.osm2orc.standalone.model.Changeset;
-import org.openstreetmap.osmosis.core.OsmosisRuntimeException;
-import org.openstreetmap.osmosis.core.task.v0_6.Sink;
-import org.openstreetmap.osmosis.xml.common.BaseElementProcessor;
 import org.openstreetmap.osmosis.xml.common.ElementProcessor;
 import org.openstreetmap.osmosis.xml.v0_6.impl.*;
 import org.xml.sax.Attributes;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 public class ChangesetOsmElementProcessor extends SourceElementProcessor {
-
-    private final List<Changeset> changesets;
-
 
     private static final Logger LOG = Logger.getLogger(OsmElementProcessor.class.getName());
 
@@ -23,12 +15,11 @@ public class ChangesetOsmElementProcessor extends SourceElementProcessor {
 
     private ChangesetElementProcessor changesetElementProcessor;
 
-    public ChangesetOsmElementProcessor(List<Changeset> changesets) {
+    public ChangesetOsmElementProcessor(ChangesetCallback changesetCallback) {
         // parentProcessor, sink, enableDateParsing
         super(null, null, true);
 
-        this.changesets = changesets;
-        changesetElementProcessor = new ChangesetElementProcessor(this, changesets);
+        changesetElementProcessor = new ChangesetElementProcessor(this, changesetCallback);
     }
 
 

@@ -22,6 +22,8 @@ public class Changeset {
     public static final String COMMENTS_COUNT = "comments_count";
     public static final String TAG = "tag";
 
+    private static long instanceCount = 0;
+
     private long id;
     private TimestampContainer created_at;
     private TimestampContainer closed_at;
@@ -40,6 +42,7 @@ public class Changeset {
                      boolean open, long num_changes, String user,
                      long uid, Double min_lat, Double max_lat,
                      Double min_lon, Double max_long, long comments_count) {
+        ++instanceCount;
         this.id = id;
         this.created_at = created_at;
         this.closed_at = closed_at;
@@ -106,4 +109,7 @@ public class Changeset {
         return tags;
     }
 
+    public long instanceCount() {
+        return instanceCount;
+    }
 }

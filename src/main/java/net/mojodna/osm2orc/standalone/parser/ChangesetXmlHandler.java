@@ -24,8 +24,8 @@ public class ChangesetXmlHandler extends DefaultHandler {
     private ElementProcessor elementProcessor;
     private Locator documentLocator;
 
-    public ChangesetXmlHandler(final List<Changeset> changesets) {
-        this.changesetOsmElementProcessor = new ChangesetOsmElementProcessor(changesets);
+    public ChangesetXmlHandler(ChangesetCallback changesetCallback) {
+        this.changesetOsmElementProcessor = new ChangesetOsmElementProcessor(changesetCallback);
     }
 
     /**

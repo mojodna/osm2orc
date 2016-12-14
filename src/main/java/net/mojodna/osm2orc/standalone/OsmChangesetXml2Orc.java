@@ -79,12 +79,9 @@ public class OsmChangesetXml2Orc {
         // Parse Changeset XML
         InputStream inputStream = new FileInputStream(inputChangesetXml);
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
-        List<Changeset> changesets = new ArrayList<>();
-        parser.parse(inputStream, new ChangesetXmlHandler(changesets));
 
-        int row;
-        // TODO We need to stream these changesets so we don't have them all in memory...
-        for (Changeset changeset : changesets) {
+        parser.parse(inputStream, new ChangesetXmlHandler(changeset -> {
+            int row;
             if (batch.size == batch.getMaxSize()) {
                 try {
                     writer.addRowBatch(batch);
@@ -159,7 +156,8 @@ public class OsmChangesetXml2Orc {
                 i++;
             }
 
-        }
+            System.out.println("Converted " + changeset.instanceCount() + " changesets to orc. id = " + changeset.getId());
+        }));
 
         // flush any pending rows
         writer.addRowBatch(batch);

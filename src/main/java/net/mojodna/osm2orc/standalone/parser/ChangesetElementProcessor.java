@@ -14,14 +14,14 @@ import java.util.List;
 
 public class ChangesetElementProcessor extends BaseElementProcessor implements TagListener {
 
-    private List<Changeset> changesets;
+    private ChangesetCallback changesetCallback;
     private Changeset changeset;
     private TagElementProcessor tagElementProcessor;
 
 
-    public ChangesetElementProcessor(BaseElementProcessor parentProcessor, List<Changeset> changesets) {
+    public ChangesetElementProcessor(BaseElementProcessor parentProcessor, ChangesetCallback changesetCallback) {
         super(parentProcessor, true);
-        this.changesets = changesets;
+        this.changesetCallback = changesetCallback;
         tagElementProcessor = new TagElementProcessor(this, this);
     }
 
@@ -110,7 +110,7 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
 
     @Override
     public void end() {
-        changesets.add(changeset);
+        changesetCallback.call(changeset);
     }
 
     @Override
