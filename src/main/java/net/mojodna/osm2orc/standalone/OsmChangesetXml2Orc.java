@@ -1,10 +1,12 @@
 package net.mojodna.osm2orc.standalone;
 
 
+import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import net.mojodna.osm2orc.standalone.model.Changeset;
 import net.mojodna.osm2orc.standalone.parser.ChangesetXmlHandler;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.vector.*;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
@@ -13,9 +15,12 @@ import org.apache.orc.Writer;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.orc.TypeDescription.*;
 import static org.apache.orc.TypeDescription.createLong;
@@ -77,9 +82,88 @@ public class OsmChangesetXml2Orc {
         List<Changeset> changesets = new ArrayList<>();
         parser.parse(inputStream, new ChangesetXmlHandler(changesets));
 
+        int row;
         // TODO We need to stream these changesets so we don't have them all in memory...
         for (Changeset changeset : changesets) {
+            if (batch.size == batch.getMaxSize()) {
+                try {
+                    writer.addRowBatch(batch);
+                    batch.reset();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            row = batch.size++;
+            id.vector[row] = changeset.getId();
+
+            try {
+                created_at.time[row] = changeset.getCreated_at().getTimestamp().getTime();
+            } catch (Exception e) {
+                created_at.time[row] = 0;
+            }
+            created_at.nanos[row] = 0;
+
+            try {
+                closed_at.time[row] = changeset.getClosed_at().getTimestamp().getTime();
+            } catch (Exception e) {
+                closed_at.time[row] = 0;
+            }
+            closed_at.nanos[row] = 0;
+
+            if (changeset.isOpen()) {
+                open.vector[row] = 1;
+            } else {
+                open.vector[row] = 0;
+            }
+            num_changes.vector[row] = changeset.getNum_changes();
+            user.setVal(row, changeset.getUser().getBytes());
+            uid.vector[row] = changeset.getUid();
+
+            Double minLat = changeset.getMin_lat();
+            Double maxLat = changeset.getMax_lat();
+            Double minLon = changeset.getMin_lon();
+            Double maxLon = changeset.getMax_lon();
+            if (minLat != null) {
+                min_lat.set(row, HiveDecimal.create(BigDecimal.valueOf(minLat)));
+            } else {
+                min_lat.set(row, (HiveDecimal) null);
+            }
+            if (maxLat != null) {
+                max_lat.set(row, HiveDecimal.create(BigDecimal.valueOf(maxLat)));
+            } else {
+                max_lat.set(row, (HiveDecimal) null);
+            }
+            if (minLon != null) {
+                min_lon.set(row, HiveDecimal.create(BigDecimal.valueOf(minLon)));
+            } else {
+                min_lon.set(row, (HiveDecimal) null);
+            }
+            if (maxLon != null) {
+                max_lon.set(row, HiveDecimal.create(BigDecimal.valueOf(maxLon)));
+            } else {
+                max_lon.set(row, (HiveDecimal) null);
+            }
+            comments_count.vector[row] = changeset.getComments_count();
+
+            // tags
+            tags.offsets[row] = tags.childCount;
+            Map<String,String> _tags = changeset.getTags();
+            tags.lengths[row] = _tags.size();
+            tags.childCount += tags.lengths[row];
+            tags.keys.ensureSize(tags.childCount, tags.offsets[row] != 0);
+            tags.values.ensureSize(tags.childCount, tags.offsets[row] != 0);
+            int i = 0;
+            for (Map.Entry<String, String> kv : _tags.entrySet()) {
+                ((BytesColumnVector) tags.keys).setVal((int) tags.offsets[row] + i, kv.getKey().getBytes());
+                ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
+                i++;
+            }
 
         }
+
+        // flush any pending rows
+        writer.addRowBatch(batch);
+        writer.close();
+
     }
 }

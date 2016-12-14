@@ -94,7 +94,7 @@ public class Changeset {
         return min_lon;
     }
 
-    public Double getMax_long() {
+    public Double getMax_lon() {
         return max_long;
     }
 
