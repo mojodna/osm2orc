@@ -184,7 +184,8 @@ SELECT count(*) FROM latest
 gradle jar
 cp builds/libs/osm2orc-1.0-SNAPSHOT.jar $OSMOSIS_HOME/lib/default
 
-osmosis --rbf ~/src/mojodna/osm2orc/delaware-latest.osm.pbf --write-orc delaware.orc
+osmosis --rbf delaware-latest.osm.pbf --write-orc delaware.orc
+osmosis --rb history-161205.osm.pbf --write-orc planet.osh.orc
 osmosis --read-xml-change 694.osc.gz --convert-change-to-full-history --write-orc 694.osc.orc
 ```
 
