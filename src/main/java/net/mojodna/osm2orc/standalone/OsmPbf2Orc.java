@@ -180,12 +180,17 @@ public class OsmPbf2Orc {
 
                     lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
                     lon.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLongitude())));
+                    nds.isNull[row] = true;
+                    members.isNull[row] = true;
 
                     break;
 
                 case Way:
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
+                    lat.isNull[row] = true;
+                    lon.isNull[row] = true;
+                    members.isNull[row] = true;
 
                     OsmWay way = (OsmWay) entity;
 
@@ -206,6 +211,9 @@ public class OsmPbf2Orc {
                 case Relation:
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
+                    lat.isNull[row] = true;
+                    lon.isNull[row] = true;
+                    nds.isNull[row] = true;
 
                     OsmRelation relation = (OsmRelation) entity;
 
