@@ -36,10 +36,10 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
         long numChanges;
         String user;
         Long uid;
-        Double minLat;
-        Double maxLat;
-        Double minLon;
-        Double maxLon;
+        String minLat;
+        String maxLat;
+        String minLon;
+        String maxLon;
         long commentsCount;
 
         id = Long.parseLong(attributes.getValue(Changeset.ID));
@@ -63,26 +63,11 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
         } catch (Exception e) {
             uid = null;
         }
-        try {
-            minLat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
-        } catch (Exception e) {
-            minLat = null;
-        }
-        try {
-            maxLat = Double.parseDouble(attributes.getValue(Changeset.MAX_LAT));
-        } catch (Exception e) {
-            maxLat = null;
-        }
-        try {
-            minLon = Double.parseDouble(attributes.getValue(Changeset.MIN_LON));
-        } catch (Exception e) {
-            minLon = null;
-        }
-        try {
-            maxLon = Double.parseDouble(attributes.getValue(Changeset.MAX_LON));
-        } catch (Exception e) {
-            maxLon = null;
-        }
+
+        minLat = attributes.getValue(Changeset.MIN_LAT);
+        maxLat = attributes.getValue(Changeset.MAX_LAT);
+        minLon = attributes.getValue(Changeset.MIN_LON);
+        maxLon = attributes.getValue(Changeset.MAX_LON);
 
         commentsCount = Long.parseLong(attributes.getValue(Changeset.COMMENTS_COUNT));
 

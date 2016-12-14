@@ -130,28 +130,29 @@ public class OsmChangesetXml2Orc {
                 uid.isNull[row] = true;
             }
 
-
-            Double _minLat = changeset.getMinLat();
-            Double _maxLat = changeset.getMaxLat();
-            Double _minLon = changeset.getMinLon();
-            Double _maxLon = changeset.getMaxLon();
-            if (_minLat != null) {
-                minLat.set(row, HiveDecimal.create(BigDecimal.valueOf(_minLat)));
+            // We've kept these parsed values as string
+            // to guarantee no double precision loss.
+            String minLatStr = changeset.getMinLat();
+            String maxLatStr = changeset.getMaxLat();
+            String minLonStr = changeset.getMinLon();
+            String maxLonStr = changeset.getMaxLon();
+            if (minLatStr != null) {
+                minLat.set(row, HiveDecimal.create(new BigDecimal(maxLatStr)));
             } else {
                 minLat.set(row, (HiveDecimal) null);
             }
-            if (_maxLat != null) {
-                maxLat.set(row, HiveDecimal.create(BigDecimal.valueOf(_maxLat)));
+            if (maxLatStr != null) {
+                maxLat.set(row, HiveDecimal.create(new BigDecimal(maxLatStr)));
             } else {
                 maxLat.set(row, (HiveDecimal) null);
             }
-            if (_minLon != null) {
-                minLon.set(row, HiveDecimal.create(BigDecimal.valueOf(_minLon)));
+            if (minLonStr != null) {
+                minLon.set(row, HiveDecimal.create(new BigDecimal(minLonStr)));
             } else {
                 minLon.set(row, (HiveDecimal) null);
             }
-            if (_maxLon != null) {
-                maxLon.set(row, HiveDecimal.create(BigDecimal.valueOf(_maxLon)));
+            if (maxLonStr != null) {
+                maxLon.set(row, HiveDecimal.create(new BigDecimal(maxLonStr)));
             } else {
                 maxLon.set(row, (HiveDecimal) null);
             }
