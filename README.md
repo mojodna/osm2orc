@@ -96,6 +96,26 @@ STORED AS ORCFILE
 LOCATION 's3://osm.mojodna.net/planet/';
 ```
 
+```sql
+CREATE EXTERNAL TABLE changesets (
+    id BIGINT,
+    created_at TIMESTAMP,
+    closed_at TIMESTAMP,
+    open BOOLEAN,
+    num_changes BIGINT,
+    user STRING,
+    uid BIGINT,
+    min_lat DECIMAL(9,7),
+    max_lat DECIMAL(9,7),
+    min_lon DECIMAL(10,7),
+    max_lon DECIMAL(10,7),
+    comments_count BIGINT,
+    tags MAP<STRING,STRING>
+)
+STORED AS ORCFILE
+LOCATION 's3://osm.mojodna.net/changesets-20161208/';
+```
+
 **NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
 
 ## Sample Queries
