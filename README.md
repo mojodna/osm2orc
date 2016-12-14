@@ -247,6 +247,33 @@ WITH latest AS (
 SELECT count(*) FROM latest
 ```
 
+Count how many changesets have a comment tag (h/t [ToeBee/ChangesetMD](https://github.com/ToeBee/ChangesetMD)):
+
+```sql
+SELECT count(*)
+FROM changesets
+WHERE tags['comment'] IS NOT NULL
+```
+
+Find all changesets that were created by JOSM:
+
+```sql
+SELECT count(*)
+FROM changesets
+WHERE tags['created_by'] LIKE 'JOSM%'
+```
+
+Find all changesets that were created in Liberty Island:
+
+```sql
+SELECT count(id)
+FROM changesets
+WHERE min_lon BETWEEN -74.0474545 AND -74.0433990
+  AND max_lon BETWEEN -74.0474545 AND -74.0433990
+  AND min_lat BETWEEN 40.6884971 AND 40.6911817
+  AND max_lat BETWEEN 40.6884971 AND 40.6911817
+```
+
 ## Osmosis Plugin
 
 ```bash
