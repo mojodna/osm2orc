@@ -27,6 +27,26 @@ STORED AS ORCFILE
 LOCATION 's3://osm.mojodna.net/planet-2016-11-30/';
 ```
 
+```sql
+CREATE EXTERNAL TABLE planet_history (
+    id BIGINT,
+    type STRING,
+    tags MAP<STRING,STRING>,
+    lat DECIMAL(9,7),
+    lon DECIMAL(10,7),
+    nds ARRAY<STRUCT<ref: BIGINT>>,
+    members ARRAY<STRUCT<type: STRING, ref: BIGINT, role: STRING>>,
+    changeset BIGINT,
+    timestamp TIMESTAMP,
+    uid BIGINT,
+    user STRING,
+    version BIGINT,
+    visible BOOLEAN
+)
+STORED AS ORCFILE
+LOCATION 's3://osm.mojodna.net/planet/';
+```
+
 **NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
 
 ## Sample Queries
@@ -107,12 +127,12 @@ Get information about the most recent version of all non-deleted entities:
 
 ```sql
 SELECT planet.*
-FROM seattle_history planet
+FROM planet_history planet
 INNER JOIN (
   SELECT id,
          type,
          MAX(version) version
-  FROM seattle_history
+  FROM planet_history
   GROUP BY type, id
 ) latest
   ON planet.id = latest.id
@@ -129,17 +149,17 @@ ORDER BY
   planet.id
 ```
 
-Get the number of deleted entities:
+Get the number of deleted entities (this will probably time out):
 
 ```sql
 WITH latest AS (
   SELECT planet.*
-  FROM seattle_history planet
+  FROM planet_history planet
   INNER JOIN (
     SELECT id,
            type,
            MAX(version) version
-    FROM seattle_history
+    FROM planet_history
     GROUP BY type, id
   ) latest
     ON planet.id = latest.id
