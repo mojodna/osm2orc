@@ -1,6 +1,8 @@
 package net.mojodna.osm2orc.standalone;
 
 
+import net.mojodna.osm2orc.standalone.model.Changeset;
+import net.mojodna.osm2orc.standalone.parser.ChangesetXmlHandler;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.ql.exec.vector.*;
@@ -8,8 +10,12 @@ import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
 
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.orc.TypeDescription.*;
 import static org.apache.orc.TypeDescription.createLong;
@@ -18,18 +24,18 @@ import static org.apache.orc.TypeDescription.createString;
 public class OsmChangesetXml2Orc {
 
     private static final TypeDescription SCHEMA = createStruct()
-            .addField("id", createLong())
-            .addField("created_at", createTimestamp())
-            .addField("closed_at", createTimestamp())
-            .addField("open", createBoolean())
-            .addField("num_changes", createLong())
-            .addField("user", createString())
-            .addField("uid", createLong())
-            .addField("min_lat", createDecimal().withScale(7).withPrecision(9))
-            .addField("max_lat", createDecimal().withScale(7).withPrecision(9))
-            .addField("min_lon", createDecimal().withScale(7).withPrecision(10))
-            .addField("max_lon", createDecimal().withScale(7).withPrecision(10))
-            .addField("comments_count", createLong())
+            .addField(Changeset.ID, createLong())
+            .addField(Changeset.CREATED_AT, createTimestamp())
+            .addField(Changeset.CLOSED_AT, createTimestamp())
+            .addField(Changeset.OPEN, createBoolean())
+            .addField(Changeset.NUM_CHANGES, createLong())
+            .addField(Changeset.USER, createString())
+            .addField(Changeset.UID, createLong())
+            .addField(Changeset.MIN_LAT, createDecimal().withScale(7).withPrecision(9))
+            .addField(Changeset.MAX_LAT, createDecimal().withScale(7).withPrecision(9))
+            .addField(Changeset.MIN_LON, createDecimal().withScale(7).withPrecision(10))
+            .addField(Changeset.MAX_LON, createDecimal().withScale(7).withPrecision(10))
+            .addField(Changeset.COMMENTS_COUNT, createLong())
             .addField("tags", createMap(
                     createString(),
                     createString()
@@ -44,11 +50,12 @@ public class OsmChangesetXml2Orc {
     }
 
     public void convert() throws Exception {
+        // Setup ORC writer
         Configuration conf = new Configuration();
         Writer writer = OrcFile.createWriter(new Path(outputOrc),
                 OrcFile.writerOptions(conf).setSchema(SCHEMA));
-        InputStream input = new FileInputStream(inputChangesetXml);
 
+        // Setup ORC vectors
         VectorizedRowBatch batch = SCHEMA.createRowBatch();
         LongColumnVector id = (LongColumnVector) batch.cols[0];
         TimestampColumnVector created_at = (TimestampColumnVector) batch.cols[1];
@@ -64,6 +71,15 @@ public class OsmChangesetXml2Orc {
         LongColumnVector comments_count = (LongColumnVector) batch.cols[11];
         MapColumnVector tags = (MapColumnVector) batch.cols[12];
 
+        // Parse Changeset XML
+        InputStream inputStream = new FileInputStream(inputChangesetXml);
+        SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+        List<Changeset> changesets = new ArrayList<>();
+        parser.parse(inputStream, new ChangesetXmlHandler(changesets));
 
+        // TODO We need to stream these changesets so we don't have them all in memory...
+        for (Changeset changeset : changesets) {
+
+        }
     }
 }
