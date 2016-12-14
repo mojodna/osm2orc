@@ -6,8 +6,6 @@ Sample outputs are also available via S3 for querying with AWS Athena.
 
 ## Schema
 
-The following schema should also work with Presto, Spark, and Hive (the location protocol may need to be changed to `s3a:` and `hadoop-aws-2.7.3.jar` and `aws-java-sdk-1.7.4.jar` (*not* the latest) must be available in your `CLASSPATH`).
-
 **IF YOU'RE NOT RUNNING IN THE AWS `us-east-1` REGION, PLEASE COPY `s3://osm.mojodna.net/planet-2016-11-30/planet-2016-11-30.orc` INTO YOUR OWN BUCKET / HDFS**
 
 ```sql
@@ -70,6 +68,8 @@ LOCATION 's3://osm.mojodna.net/changesets-20161208/';
 ```
 
 **NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
+
+The schemas should also work with Presto, Spark, and Hive, although the location protocol may need to be changed to `s3a:` and `hadoop-aws-2.7.3.jar` and `aws-java-sdk-1.7.4.jar` (*not* the latest) must be available in your `CLASSPATH`.
 
 ## Sample Queries
 
