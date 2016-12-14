@@ -29,17 +29,17 @@ public class Changeset {
     private long num_changes;
     private String user;
     private long uid;
-    private double min_lat;
-    private double max_lat;
-    private double min_lon;
-    private double max_long;
+    private Double min_lat;
+    private Double max_lat;
+    private Double min_lon;
+    private Double max_long;
     private long comments_count;
     private Map<String, String> tags = new HashMap<>();
 
     public Changeset(long id, TimestampContainer created_at, TimestampContainer closed_at,
                      boolean open, long num_changes, String user,
-                     long uid, double min_lat, double max_lat,
-                     double min_lon, double max_long, long comments_count) {
+                     long uid, Double min_lat, Double max_lat,
+                     Double min_lon, Double max_long, long comments_count) {
         this.id = id;
         this.created_at = created_at;
         this.closed_at = closed_at;
@@ -82,19 +82,19 @@ public class Changeset {
         return uid;
     }
 
-    public double getMin_lat() {
+    public Double getMin_lat() {
         return min_lat;
     }
 
-    public double getMax_lat() {
+    public Double getMax_lat() {
         return max_lat;
     }
 
-    public double getMin_lon() {
+    public Double getMin_lon() {
         return min_lon;
     }
 
-    public double getMax_long() {
+    public Double getMax_long() {
         return max_long;
     }
 

@@ -28,29 +28,59 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
     @Override
     public void begin(Attributes attributes) {
         long id;
-        TimestampContainer created_at;
-        TimestampContainer closed_at;
+        String created_atStr;
+        String closed_atStr;
+        TimestampContainer created_at = null;
+        TimestampContainer closed_at = null;
         boolean open;
         long num_changes;
         String user;
         long uid;
-        double min_lat;
-        double max_lat;
-        double min_lon;
-        double max_lon;
+        Double min_lat;
+        Double max_lat;
+        Double min_lon;
+        Double max_lon;
         long comments_count;
 
         id = Long.parseLong(attributes.getValue(Changeset.ID));
-        created_at = createTimestampContainer(attributes.getValue(Changeset.CREATED_AT));
-        closed_at = createTimestampContainer(attributes.getValue(Changeset.CLOSED_AT));
+
+        // Created / closed at timestamps are not guaranteed.
+        created_atStr = attributes.getValue(Changeset.CREATED_AT);
+        closed_atStr = attributes.getValue(Changeset.CLOSED_AT);
+        if (created_atStr != null) {
+            created_at = createTimestampContainer(created_atStr);
+        }
+        if (closed_atStr != null) {
+            closed_at = createTimestampContainer(closed_atStr);
+        }
+
         open = attributes.getValue(Changeset.OPEN).equals("true");
         num_changes = Long.parseLong(attributes.getValue(Changeset.NUM_CHANGES));
         user = attributes.getValue(Changeset.USER);
         uid = Long.parseLong(attributes.getValue(Changeset.UID));
-        min_lat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
-        max_lat = Double.parseDouble(attributes.getValue(Changeset.MAX_LAT));
-        min_lon = Double.parseDouble(attributes.getValue(Changeset.MIN_LON));
-        max_lon = Double.parseDouble(attributes.getValue(Changeset.MAX_LON));
+
+        // We also might not have min/max lat/lng. For example, open changesets...
+        try {
+            min_lat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
+        } catch (Exception e) {
+            min_lat = null;
+        }
+        try {
+            max_lat = Double.parseDouble(attributes.getValue(Changeset.MAX_LAT));
+        } catch (Exception e) {
+            max_lat = null;
+        }
+        try {
+            min_lon = Double.parseDouble(attributes.getValue(Changeset.MIN_LON));
+        } catch (Exception e) {
+            min_lon = null;
+        }
+        try {
+            max_lon = Double.parseDouble(attributes.getValue(Changeset.MAX_LON));
+        } catch (Exception e) {
+            max_lon = null;
+        }
+
         comments_count = Long.parseLong(attributes.getValue(Changeset.COMMENTS_COUNT));
 
         changeset = new Changeset(id, created_at, closed_at, open, num_changes, user, uid,
