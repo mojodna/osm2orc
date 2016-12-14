@@ -1,13 +1,17 @@
 package net.mojodna.osm2orc.standalone;
 
 
-import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import net.mojodna.osm2orc.standalone.model.Changeset;
 import net.mojodna.osm2orc.standalone.parser.ChangesetXmlHandler;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
-import org.apache.hadoop.hive.ql.exec.vector.*;
+import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.MapColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
@@ -18,8 +22,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static org.apache.orc.TypeDescription.*;
@@ -63,17 +65,17 @@ public class OsmChangesetXml2Orc {
         // Setup ORC vectors
         VectorizedRowBatch batch = SCHEMA.createRowBatch();
         LongColumnVector id = (LongColumnVector) batch.cols[0];
-        TimestampColumnVector created_at = (TimestampColumnVector) batch.cols[1];
-        TimestampColumnVector closed_at = (TimestampColumnVector) batch.cols[2];
+        TimestampColumnVector createdAt = (TimestampColumnVector) batch.cols[1];
+        TimestampColumnVector closedAt = (TimestampColumnVector) batch.cols[2];
         LongColumnVector open = (LongColumnVector) batch.cols[3];
-        LongColumnVector num_changes = (LongColumnVector) batch.cols[4];
+        LongColumnVector numChanges = (LongColumnVector) batch.cols[4];
         BytesColumnVector user = (BytesColumnVector) batch.cols[5];
         LongColumnVector uid = (LongColumnVector) batch.cols[6];
-        DecimalColumnVector min_lat = (DecimalColumnVector) batch.cols[7];
-        DecimalColumnVector max_lat = (DecimalColumnVector) batch.cols[8];
-        DecimalColumnVector min_lon = (DecimalColumnVector) batch.cols[9];
-        DecimalColumnVector max_lon = (DecimalColumnVector) batch.cols[10];
-        LongColumnVector comments_count = (LongColumnVector) batch.cols[11];
+        DecimalColumnVector minLat = (DecimalColumnVector) batch.cols[7];
+        DecimalColumnVector maxLat = (DecimalColumnVector) batch.cols[8];
+        DecimalColumnVector minLon = (DecimalColumnVector) batch.cols[9];
+        DecimalColumnVector maxLon = (DecimalColumnVector) batch.cols[10];
+        LongColumnVector commentsCount = (LongColumnVector) batch.cols[11];
         MapColumnVector tags = (MapColumnVector) batch.cols[12];
 
         // Parse Changeset XML
@@ -94,25 +96,25 @@ public class OsmChangesetXml2Orc {
             id.vector[row] = changeset.getId();
 
             try {
-                created_at.time[row] = changeset.getCreated_at().getTimestamp().getTime();
+                createdAt.time[row] = changeset.getCreatedAt().getTimestamp().getTime();
             } catch (Exception e) {
-                created_at.time[row] = 0;
+                createdAt.time[row] = 0;
             }
-            created_at.nanos[row] = 0;
+            createdAt.nanos[row] = 0;
 
             try {
-                closed_at.time[row] = changeset.getClosed_at().getTimestamp().getTime();
+                closedAt.time[row] = changeset.getClosedAt().getTimestamp().getTime();
             } catch (Exception e) {
-                closed_at.time[row] = 0;
+                closedAt.time[row] = 0;
             }
-            closed_at.nanos[row] = 0;
+            closedAt.nanos[row] = 0;
 
             if (changeset.isOpen()) {
                 open.vector[row] = 1;
             } else {
                 open.vector[row] = 0;
             }
-            num_changes.vector[row] = changeset.getNum_changes();
+            numChanges.vector[row] = changeset.getNumChanges();
 
             if (changeset.getUser() != null) {
                 user.setVal(row, changeset.getUser().getBytes());
@@ -126,31 +128,31 @@ public class OsmChangesetXml2Orc {
             }
 
 
-            Double minLat = changeset.getMin_lat();
-            Double maxLat = changeset.getMax_lat();
-            Double minLon = changeset.getMin_lon();
-            Double maxLon = changeset.getMax_lon();
-            if (minLat != null) {
-                min_lat.set(row, HiveDecimal.create(BigDecimal.valueOf(minLat)));
+            Double _minLat = changeset.getMinLat();
+            Double _maxLat = changeset.getMaxLat();
+            Double _minLon = changeset.getMinLon();
+            Double _maxLon = changeset.getMaxLon();
+            if (_minLat != null) {
+                minLat.set(row, HiveDecimal.create(BigDecimal.valueOf(_minLat)));
             } else {
-                min_lat.set(row, (HiveDecimal) null);
+                minLat.set(row, (HiveDecimal) null);
             }
-            if (maxLat != null) {
-                max_lat.set(row, HiveDecimal.create(BigDecimal.valueOf(maxLat)));
+            if (_maxLat != null) {
+                maxLat.set(row, HiveDecimal.create(BigDecimal.valueOf(_maxLat)));
             } else {
-                max_lat.set(row, (HiveDecimal) null);
+                maxLat.set(row, (HiveDecimal) null);
             }
-            if (minLon != null) {
-                min_lon.set(row, HiveDecimal.create(BigDecimal.valueOf(minLon)));
+            if (_minLon != null) {
+                minLon.set(row, HiveDecimal.create(BigDecimal.valueOf(_minLon)));
             } else {
-                min_lon.set(row, (HiveDecimal) null);
+                minLon.set(row, (HiveDecimal) null);
             }
-            if (maxLon != null) {
-                max_lon.set(row, HiveDecimal.create(BigDecimal.valueOf(maxLon)));
+            if (_maxLon != null) {
+                maxLon.set(row, HiveDecimal.create(BigDecimal.valueOf(_maxLon)));
             } else {
-                max_lon.set(row, (HiveDecimal) null);
+                maxLon.set(row, (HiveDecimal) null);
             }
-            comments_count.vector[row] = changeset.getComments_count();
+            commentsCount.vector[row] = changeset.getCommentsCount();
 
             // tags
             tags.offsets[row] = tags.childCount;
@@ -163,7 +165,7 @@ public class OsmChangesetXml2Orc {
             for (Map.Entry<String, String> kv : _tags.entrySet()) {
                 ((BytesColumnVector) tags.keys).setVal((int) tags.offsets[row] + i, kv.getKey().getBytes());
                 ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
-                i++;
+                ++i;
             }
 
             System.out.println("Converted " + changeset.instanceCount() + " changesets to orc. id = " + changeset.getId());

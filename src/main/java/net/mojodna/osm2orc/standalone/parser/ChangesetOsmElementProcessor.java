@@ -2,14 +2,10 @@ package net.mojodna.osm2orc.standalone.parser;
 
 
 import org.openstreetmap.osmosis.xml.common.ElementProcessor;
-import org.openstreetmap.osmosis.xml.v0_6.impl.*;
+import org.openstreetmap.osmosis.xml.v0_6.impl.SourceElementProcessor;
 import org.xml.sax.Attributes;
 
-import java.util.logging.Logger;
-
 public class ChangesetOsmElementProcessor extends SourceElementProcessor {
-
-    private static final Logger LOG = Logger.getLogger(OsmElementProcessor.class.getName());
 
     private static final String ELEMENT_NAME_CHANGESET = "changeset";
 

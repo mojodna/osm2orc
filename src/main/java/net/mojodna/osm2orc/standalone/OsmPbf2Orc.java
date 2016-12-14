@@ -147,7 +147,7 @@ public class OsmPbf2Orc {
                     ((BytesColumnVector) tags.keys).setVal((int) tags.offsets[row] + i, kv.getKey().getBytes());
                     ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
 
-                    i++;
+                    ++i;
                 }
             }
 

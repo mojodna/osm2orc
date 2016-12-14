@@ -1,7 +1,6 @@
 package net.mojodna.osm2orc.standalone.parser;
 
 
-import net.mojodna.osm2orc.standalone.model.Changeset;
 import org.openstreetmap.osmosis.core.OsmosisRuntimeException;
 import org.openstreetmap.osmosis.xml.common.ElementProcessor;
 import org.xml.sax.Attributes;
@@ -10,7 +9,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 /**

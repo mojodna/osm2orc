@@ -28,34 +28,34 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
     @Override
     public void begin(Attributes attributes) {
         long id;
-        String created_atStr;
-        String closed_atStr;
-        TimestampContainer created_at = null;
-        TimestampContainer closed_at = null;
+        String createdAtStr;
+        String closedAtStr;
+        TimestampContainer createdAt = null;
+        TimestampContainer closedAt = null;
         boolean open;
-        long num_changes;
+        long numChanges;
         String user;
         Long uid;
-        Double min_lat;
-        Double max_lat;
-        Double min_lon;
-        Double max_lon;
-        long comments_count;
+        Double minLat;
+        Double maxLat;
+        Double minLon;
+        Double maxLon;
+        long commentsCount;
 
         id = Long.parseLong(attributes.getValue(Changeset.ID));
 
         // Created / closed at timestamps are not guaranteed.
-        created_atStr = attributes.getValue(Changeset.CREATED_AT);
-        closed_atStr = attributes.getValue(Changeset.CLOSED_AT);
-        if (created_atStr != null) {
-            created_at = createTimestampContainer(created_atStr);
+        createdAtStr = attributes.getValue(Changeset.CREATED_AT);
+        closedAtStr = attributes.getValue(Changeset.CLOSED_AT);
+        if (createdAtStr != null) {
+            createdAt = createTimestampContainer(createdAtStr);
         }
-        if (closed_atStr != null) {
-            closed_at = createTimestampContainer(closed_atStr);
+        if (closedAtStr != null) {
+            closedAt = createTimestampContainer(closedAtStr);
         }
 
         open = attributes.getValue(Changeset.OPEN).equals("true");
-        num_changes = Long.parseLong(attributes.getValue(Changeset.NUM_CHANGES));
+        numChanges = Long.parseLong(attributes.getValue(Changeset.NUM_CHANGES));
         user = attributes.getValue(Changeset.USER);
 
         try {
@@ -64,30 +64,30 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
             uid = null;
         }
         try {
-            min_lat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
+            minLat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
         } catch (Exception e) {
-            min_lat = null;
+            minLat = null;
         }
         try {
-            max_lat = Double.parseDouble(attributes.getValue(Changeset.MAX_LAT));
+            maxLat = Double.parseDouble(attributes.getValue(Changeset.MAX_LAT));
         } catch (Exception e) {
-            max_lat = null;
+            maxLat = null;
         }
         try {
-            min_lon = Double.parseDouble(attributes.getValue(Changeset.MIN_LON));
+            minLon = Double.parseDouble(attributes.getValue(Changeset.MIN_LON));
         } catch (Exception e) {
-            min_lon = null;
+            minLon = null;
         }
         try {
-            max_lon = Double.parseDouble(attributes.getValue(Changeset.MAX_LON));
+            maxLon = Double.parseDouble(attributes.getValue(Changeset.MAX_LON));
         } catch (Exception e) {
-            max_lon = null;
+            maxLon = null;
         }
 
-        comments_count = Long.parseLong(attributes.getValue(Changeset.COMMENTS_COUNT));
+        commentsCount = Long.parseLong(attributes.getValue(Changeset.COMMENTS_COUNT));
 
-        changeset = new Changeset(id, created_at, closed_at, open, num_changes, user, uid,
-                                    min_lat, max_lat, min_lon, max_lon, comments_count);
+        changeset = new Changeset(id, createdAt, closedAt, open, numChanges, user, uid,
+                                    minLat, maxLat, minLon, maxLon, commentsCount);
     }
 
     /**

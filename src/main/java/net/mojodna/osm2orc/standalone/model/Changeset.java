@@ -25,56 +25,56 @@ public class Changeset {
     private static long instanceCount = 0;
 
     private long id;
-    private TimestampContainer created_at;
-    private TimestampContainer closed_at;
+    private TimestampContainer createdAt;
+    private TimestampContainer closedAt;
     private boolean open;
-    private long num_changes;
+    private long numChanges;
     private String user;
     private Long uid;
-    private Double min_lat;
-    private Double max_lat;
-    private Double min_lon;
-    private Double max_long;
-    private long comments_count;
+    private Double minLat;
+    private Double maxLat;
+    private Double minLon;
+    private Double maxLon;
+    private long commentsCount;
     private Map<String, String> tags = new HashMap<>();
 
-    public Changeset(long id, TimestampContainer created_at, TimestampContainer closed_at,
-                     boolean open, long num_changes, String user,
-                     Long uid, Double min_lat, Double max_lat,
-                     Double min_lon, Double max_long, long comments_count) {
+    public Changeset(long id, TimestampContainer createdAt, TimestampContainer closedAt,
+                     boolean open, long numChanges, String user,
+                     Long uid, Double minLat, Double maxLat,
+                     Double minLon, Double maxLon, long commentsCount) {
         ++instanceCount;
         this.id = id;
-        this.created_at = created_at;
-        this.closed_at = closed_at;
+        this.createdAt = createdAt;
+        this.closedAt = closedAt;
         this.open = open;
-        this.num_changes = num_changes;
+        this.numChanges = numChanges;
         this.user = user;
         this.uid = uid;
-        this.min_lat = min_lat;
-        this.max_lat = max_lat;
-        this.min_lon = min_lon;
-        this.max_long = max_long;
-        this.comments_count = comments_count;
+        this.minLat = minLat;
+        this.maxLat = maxLat;
+        this.minLon = minLon;
+        this.maxLon = maxLon;
+        this.commentsCount = commentsCount;
     }
 
     public long getId() {
         return id;
     }
 
-    public TimestampContainer getCreated_at() {
-        return created_at;
+    public TimestampContainer getCreatedAt() {
+        return createdAt;
     }
 
-    public TimestampContainer getClosed_at() {
-        return closed_at;
+    public TimestampContainer getClosedAt() {
+        return closedAt;
     }
 
     public boolean isOpen() {
         return open;
     }
 
-    public long getNum_changes() {
-        return num_changes;
+    public long getNumChanges() {
+        return numChanges;
     }
 
     public String getUser() {
@@ -85,24 +85,24 @@ public class Changeset {
         return uid;
     }
 
-    public Double getMin_lat() {
-        return min_lat;
+    public Double getMinLat() {
+        return minLat;
     }
 
-    public Double getMax_lat() {
-        return max_lat;
+    public Double getMaxLat() {
+        return maxLat;
     }
 
-    public Double getMin_lon() {
-        return min_lon;
+    public Double getMinLon() {
+        return minLon;
     }
 
-    public Double getMax_lon() {
-        return max_long;
+    public Double getMaxLon() {
+        return maxLon;
     }
 
-    public long getComments_count() {
-        return comments_count;
+    public long getCommentsCount() {
+        return commentsCount;
     }
 
     public Map<String, String> getTags() {
