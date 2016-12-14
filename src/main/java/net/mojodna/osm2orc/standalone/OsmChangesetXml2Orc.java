@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.apache.orc.TypeDescription.*;
 import static org.apache.orc.TypeDescription.createLong;
@@ -81,6 +82,8 @@ public class OsmChangesetXml2Orc {
         // Parse Changeset XML
         InputStream inputStream = new FileInputStream(inputChangesetXml);
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
+
+        final AtomicLong count = new AtomicLong(0);
 
         parser.parse(inputStream, new ChangesetXmlHandler(changeset -> {
             int row;
@@ -167,8 +170,8 @@ public class OsmChangesetXml2Orc {
                 ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
                 ++i;
             }
-
-            System.out.println("Converted " + changeset.instanceCount() + " changesets to orc. id = " + changeset.getId());
+            System.out.println(count.incrementAndGet() + " changesets converted to orc. id = "
+                    + changeset.getId() + " user=" + changeset.getUser());
         }));
 
         // flush any pending rows
