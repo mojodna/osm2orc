@@ -124,7 +124,7 @@ public class OsmChangesetXml2Orc {
             if (changeset.getUid() != null) {
                 uid.vector[row] = changeset.getUid();
             } else {
-                uid.vector[row] = -1;
+                uid.isNull[row] = true;
             }
 
 
