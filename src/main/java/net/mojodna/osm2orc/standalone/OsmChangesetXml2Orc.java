@@ -102,6 +102,7 @@ public class OsmChangesetXml2Orc {
                 createdAt.time[row] = changeset.getCreatedAt().getTimestamp().getTime();
             } catch (Exception e) {
                 createdAt.time[row] = 0;
+                createdAt.isNull[row] = true;
             }
             createdAt.nanos[row] = 0;
 
@@ -109,6 +110,7 @@ public class OsmChangesetXml2Orc {
                 closedAt.time[row] = changeset.getClosedAt().getTimestamp().getTime();
             } catch (Exception e) {
                 closedAt.time[row] = 0;
+                closedAt.isNull[row] = true;
             }
             closedAt.nanos[row] = 0;
 
@@ -123,6 +125,7 @@ public class OsmChangesetXml2Orc {
                 user.setVal(row, changeset.getUser().getBytes());
             } else {
                 user.setVal(row, new byte[0]);
+                user.isNull[row] = true;
             }
             if (changeset.getUid() != null) {
                 uid.vector[row] = changeset.getUid();
@@ -140,21 +143,25 @@ public class OsmChangesetXml2Orc {
                 minLat.set(row, HiveDecimal.create(new BigDecimal(maxLatStr)));
             } else {
                 minLat.set(row, (HiveDecimal) null);
+                minLat.isNull[row] = true;
             }
             if (maxLatStr != null) {
                 maxLat.set(row, HiveDecimal.create(new BigDecimal(maxLatStr)));
             } else {
                 maxLat.set(row, (HiveDecimal) null);
+                maxLat.isNull[row] = true;
             }
             if (minLonStr != null) {
                 minLon.set(row, HiveDecimal.create(new BigDecimal(minLonStr)));
             } else {
                 minLon.set(row, (HiveDecimal) null);
+                minLon.isNull[row] = true;
             }
             if (maxLonStr != null) {
                 maxLon.set(row, HiveDecimal.create(new BigDecimal(maxLonStr)));
             } else {
                 maxLon.set(row, (HiveDecimal) null);
+                maxLon.isNull[row] = true;
             }
             commentsCount.vector[row] = changeset.getCommentsCount();
 
