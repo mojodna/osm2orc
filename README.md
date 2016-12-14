@@ -2,6 +2,55 @@
 
 Transcodes [OSM PBF files](https://wiki.openstreetmap.org/wiki/PBF_Format) to [ORC](http://orc.apache.org/).
 
+## Build
+
+```
+./gradlew distTar
+```
+
+Now, cd into the distribution directory and untar:
+
+```
+cd build/distributions
+tar xzvf osm2orc-1.0-SNAPSHOT.tar
+cd osm2orc-1.0-SNAPSHOT/bin
+```
+
+Your executable is in the bin directory of your distribution.
+
+
+## Run
+
+To convert an OSM PBF to ORC:
+
+```
+./osm2orc <osm-pbf-input> <osm-orc-output>
+```
+
+To convert an OSM Changeset XML to ORC:
+
+``` 
+./osm2orc --changeset <osm-changeset-xml-input> <osm-changeset-orc-output>
+```
+
+## Develop
+
+You can easily develop and debug on this project in IntelliJ IDEA.
+
+1. In IDEA's startup menu, select `Import Project`.
+2. `Import project from external model`. Select `Gradle`.
+3. Select:
+    * Use auto-import
+    * Create directories for empty content roots automatically
+    * Create separate module per source set
+    * Use default gradle wrapper (recommended)
+
+Leave `Gradle home` blank. The defaults are fine. Finish.
+
+Once you have your project loaded, all you have to do is run / debug
+`Osm2Orc.main()`. You can supply args in the `Run/Debug Configurations`.
+The tool needs at least an input and output path as described above.
+
 ## Schema
 
 The following schema should also work with Presto, Spark, and Hive (the location protocol may need to be changed to `s3a:` and `hadoop-aws-2.7.3.jar` and `aws-java-sdk-1.7.4.jar` (*not* the latest) must be available in your `CLASSPATH`).
