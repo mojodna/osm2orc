@@ -113,8 +113,18 @@ public class OsmChangesetXml2Orc {
                 open.vector[row] = 0;
             }
             num_changes.vector[row] = changeset.getNum_changes();
-            user.setVal(row, changeset.getUser().getBytes());
-            uid.vector[row] = changeset.getUid();
+
+            if (changeset.getUser() != null) {
+                user.setVal(row, changeset.getUser().getBytes());
+            } else {
+                user.setVal(row, new byte[0]);
+            }
+            if (changeset.getUid() != null) {
+                uid.vector[row] = changeset.getUid();
+            } else {
+                uid.vector[row] = -1;
+            }
+
 
             Double minLat = changeset.getMin_lat();
             Double maxLat = changeset.getMax_lat();

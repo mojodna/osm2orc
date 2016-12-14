@@ -30,7 +30,7 @@ public class Changeset {
     private boolean open;
     private long num_changes;
     private String user;
-    private long uid;
+    private Long uid;
     private Double min_lat;
     private Double max_lat;
     private Double min_lon;
@@ -40,7 +40,7 @@ public class Changeset {
 
     public Changeset(long id, TimestampContainer created_at, TimestampContainer closed_at,
                      boolean open, long num_changes, String user,
-                     long uid, Double min_lat, Double max_lat,
+                     Long uid, Double min_lat, Double max_lat,
                      Double min_lon, Double max_long, long comments_count) {
         ++instanceCount;
         this.id = id;
@@ -81,7 +81,7 @@ public class Changeset {
         return user;
     }
 
-    public long getUid() {
+    public Long getUid() {
         return uid;
     }
 

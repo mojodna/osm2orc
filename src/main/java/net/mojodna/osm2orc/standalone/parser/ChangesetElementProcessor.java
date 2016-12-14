@@ -35,7 +35,7 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
         boolean open;
         long num_changes;
         String user;
-        long uid;
+        Long uid;
         Double min_lat;
         Double max_lat;
         Double min_lon;
@@ -57,9 +57,12 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
         open = attributes.getValue(Changeset.OPEN).equals("true");
         num_changes = Long.parseLong(attributes.getValue(Changeset.NUM_CHANGES));
         user = attributes.getValue(Changeset.USER);
-        uid = Long.parseLong(attributes.getValue(Changeset.UID));
 
-        // We also might not have min/max lat/lng. For example, open changesets...
+        try {
+            uid = Long.parseLong(attributes.getValue(Changeset.UID));
+        } catch (Exception e) {
+            uid = null;
+        }
         try {
             min_lat = Double.parseDouble(attributes.getValue(Changeset.MIN_LAT));
         } catch (Exception e) {
