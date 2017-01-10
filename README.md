@@ -64,7 +64,7 @@ CREATE EXTERNAL TABLE changesets (
     tags MAP<STRING,STRING>
 )
 STORED AS ORCFILE
-LOCATION 's3://osm.mojodna.net/changesets-20161208/';
+LOCATION 's3://osm.mojodna.net/changesets-20170105/';
 ```
 
 **NOTE**: `osm.mojodna.net` is in AWS's `us-east-1` region, so **please** make sure that you're using Athena in the same region, for both performance and cost reasons.
