@@ -145,6 +145,19 @@ SELECT
 FROM ways_in_bbox
 ```
 
+Get usages of `tracktype=*` by month:
+
+```sql
+SELECT date_trunc('month', timestamp) month, count(*) count
+FROM planet_history
+WHERE tags['tracktype'] IS NOT NULL
+GROUP BY date_trunc('month', timestamp)
+ORDER BY date_trunc('month', timestamp)
+```
+
+(This would be better implemented using a window function to only count the
+_additions_ of a tag, rather than edits to an entity that uses it.)
+
 Get information about the most recent version of all non-deleted entities:
 
 ```sql
