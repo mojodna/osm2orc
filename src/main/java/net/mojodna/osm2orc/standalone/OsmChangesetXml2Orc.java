@@ -33,21 +33,21 @@ public class OsmChangesetXml2Orc {
 
     private static final TypeDescription SCHEMA = createStruct()
             .addField(Changeset.ID, createLong())
+            .addField("tags", createMap(
+                    createString(),
+                    createString()
+            ))
             .addField(Changeset.CREATED_AT, createTimestamp())
-            .addField(Changeset.CLOSED_AT, createTimestamp())
             .addField(Changeset.OPEN, createBoolean())
-            .addField(Changeset.NUM_CHANGES, createLong())
-            .addField(Changeset.USER, createString())
-            .addField(Changeset.UID, createLong())
+            .addField(Changeset.CLOSED_AT, createTimestamp())
+            .addField(Changeset.COMMENTS_COUNT, createLong())
             .addField(Changeset.MIN_LAT, createDecimal().withScale(7).withPrecision(9))
             .addField(Changeset.MAX_LAT, createDecimal().withScale(7).withPrecision(9))
             .addField(Changeset.MIN_LON, createDecimal().withScale(7).withPrecision(10))
             .addField(Changeset.MAX_LON, createDecimal().withScale(7).withPrecision(10))
-            .addField(Changeset.COMMENTS_COUNT, createLong())
-            .addField("tags", createMap(
-                    createString(),
-                    createString()
-            ));
+            .addField(Changeset.NUM_CHANGES, createLong())
+            .addField(Changeset.UID, createLong())
+            .addField(Changeset.USER, createString());
 
     private String inputChangesetXml;
     private String outputOrc;
@@ -66,18 +66,18 @@ public class OsmChangesetXml2Orc {
         // Setup ORC vectors
         VectorizedRowBatch batch = SCHEMA.createRowBatch();
         LongColumnVector id = (LongColumnVector) batch.cols[0];
-        TimestampColumnVector createdAt = (TimestampColumnVector) batch.cols[1];
-        TimestampColumnVector closedAt = (TimestampColumnVector) batch.cols[2];
+        MapColumnVector tags = (MapColumnVector) batch.cols[1];
+        TimestampColumnVector createdAt = (TimestampColumnVector) batch.cols[2];
         LongColumnVector open = (LongColumnVector) batch.cols[3];
-        LongColumnVector numChanges = (LongColumnVector) batch.cols[4];
-        BytesColumnVector user = (BytesColumnVector) batch.cols[5];
-        LongColumnVector uid = (LongColumnVector) batch.cols[6];
-        DecimalColumnVector minLat = (DecimalColumnVector) batch.cols[7];
-        DecimalColumnVector maxLat = (DecimalColumnVector) batch.cols[8];
-        DecimalColumnVector minLon = (DecimalColumnVector) batch.cols[9];
-        DecimalColumnVector maxLon = (DecimalColumnVector) batch.cols[10];
-        LongColumnVector commentsCount = (LongColumnVector) batch.cols[11];
-        MapColumnVector tags = (MapColumnVector) batch.cols[12];
+        TimestampColumnVector closedAt = (TimestampColumnVector) batch.cols[4];
+        LongColumnVector commentsCount = (LongColumnVector) batch.cols[5];
+        DecimalColumnVector minLat = (DecimalColumnVector) batch.cols[6];
+        DecimalColumnVector maxLat = (DecimalColumnVector) batch.cols[7];
+        DecimalColumnVector minLon = (DecimalColumnVector) batch.cols[8];
+        DecimalColumnVector maxLon = (DecimalColumnVector) batch.cols[9];
+        LongColumnVector numChanges = (LongColumnVector) batch.cols[10];
+        LongColumnVector uid = (LongColumnVector) batch.cols[11];
+        BytesColumnVector user = (BytesColumnVector) batch.cols[12];
 
         // Parse Changeset XML
         InputStream inputStream = new FileInputStream(inputChangesetXml);

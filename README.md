@@ -50,18 +50,18 @@ LOCATION 's3://osm.mojodna.net/planet/';
 ```sql
 CREATE EXTERNAL TABLE changesets (
     id BIGINT,
+    tags MAP<STRING,STRING>,
     created_at TIMESTAMP,
-    closed_at TIMESTAMP,
     open BOOLEAN,
-    num_changes BIGINT,
-    user STRING,
-    uid BIGINT,
+    closed_at TIMESTAMP,
+    comments_count BIGINT,
     min_lat DECIMAL(9,7),
     max_lat DECIMAL(9,7),
     min_lon DECIMAL(10,7),
     max_lon DECIMAL(10,7),
-    comments_count BIGINT,
-    tags MAP<STRING,STRING>
+    num_changes BIGINT,
+    uid BIGINT,
+    user STRING
 )
 STORED AS ORCFILE
 LOCATION 's3://osm.mojodna.net/changesets-20170105/';
