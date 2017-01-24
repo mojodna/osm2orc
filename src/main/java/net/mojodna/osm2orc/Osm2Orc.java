@@ -26,7 +26,15 @@ public class Osm2Orc {
             System.exit(0);
         }
 
-        OsmPbf2Orc.convert(args[0], args[1]);
+        final InputStream inputStream;
+
+        if (args[0].equals("-")) {
+            inputStream = System.in;
+        } else {
+            inputStream = new FileInputStream(args[0]);
+        }
+
+        OsmPbf2Orc.convert(inputStream, args[1]);
         System.exit(0);
     }
 }

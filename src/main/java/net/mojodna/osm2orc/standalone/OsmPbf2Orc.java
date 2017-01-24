@@ -25,7 +25,6 @@ import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -42,7 +41,7 @@ import static org.apache.orc.TypeDescription.createStruct;
 import static org.apache.orc.TypeDescription.createTimestamp;
 
 public class OsmPbf2Orc {
-    public static void convert(String inputPbf, String outputOrc) throws Exception {
+    public static void convert(InputStream input, String outputOrc) throws Exception {
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
                 .addField("type", createString())
@@ -106,8 +105,6 @@ public class OsmPbf2Orc {
 //        // false northing
 //        writer.addUserMetadata("y_offset", null);
 
-
-        InputStream input = new FileInputStream(inputPbf);
 
         VectorizedRowBatch batch = schema.createRowBatch();
 
