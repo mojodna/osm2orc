@@ -18,7 +18,6 @@ import org.apache.orc.Writer;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -52,11 +51,11 @@ public class OsmChangesetXml2Orc {
             .addField(Changeset.UID, createLong())
             .addField(Changeset.USER, createString());
 
-    private String inputChangesetXml;
+    private InputStream inputStream;
     private String outputOrc;
 
-    public OsmChangesetXml2Orc(String inputChangesetXml, String outputOrc) {
-        this.inputChangesetXml = inputChangesetXml;
+    public OsmChangesetXml2Orc(InputStream inputStream, String outputOrc) {
+        this.inputStream = inputStream;
         this.outputOrc = outputOrc;
     }
 
@@ -83,7 +82,6 @@ public class OsmChangesetXml2Orc {
         BytesColumnVector user = (BytesColumnVector) batch.cols[12];
 
         // Parse Changeset XML
-        InputStream inputStream = new FileInputStream(inputChangesetXml);
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 
         final AtomicLong count = new AtomicLong(0);
