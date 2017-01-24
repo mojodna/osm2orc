@@ -306,7 +306,10 @@ The following dependencies (available from a `distZip`) also need to be copied t
 * `guava-16.0.1.jar`
 * `hadoop-auth-2.6.4.jar`
 * `hadoop-common-2.6.4.jar`
-* `hive-storage-api-2.1.1.2-pre-orc.jar`
-* `orc-core-1.2.2.jar)`
+* `hive-storage-api-2.2.0.jar`
+* `log4j-1.2.17.jar`
+* `orc-core-1.3.0.jar`
+* `slf4j-api-1.7.10.jar`
+* `slf4j-log4j12-1.7.5.jar`
 
 `OSMOSIS_HOME` when installed via [Homebrew](https://brew.sh) is `/usr/local/opt/osmosis/libexec`.
