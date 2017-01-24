@@ -160,8 +160,6 @@ public class OrcWriter implements Sink {
         public void process(NodeContainer container) {
             DecimalColumnVector lat = (DecimalColumnVector) batch.cols[3];
             DecimalColumnVector lon = (DecimalColumnVector) batch.cols[4];
-            ListColumnVector nds = (ListColumnVector) batch.cols[5];
-            ListColumnVector members = (ListColumnVector) batch.cols[6];
 
             checkLimit();
             addCommonProperties(container);
@@ -169,9 +167,6 @@ public class OrcWriter implements Sink {
             Node node = container.getEntity();
             lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
             lon.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLongitude())));
-
-            nds.isNull[row] = true;
-            members.isNull[row] = true;
         }
 
         @Override
@@ -179,7 +174,6 @@ public class OrcWriter implements Sink {
             DecimalColumnVector lat = (DecimalColumnVector) batch.cols[3];
             DecimalColumnVector lon = (DecimalColumnVector) batch.cols[4];
             ListColumnVector nds = (ListColumnVector) batch.cols[5];
-            ListColumnVector members = (ListColumnVector) batch.cols[6];
 
             checkLimit();
             addCommonProperties(container);
@@ -188,8 +182,6 @@ public class OrcWriter implements Sink {
             lon.isNull[row] = true;
             lat.set(row, (HiveDecimal) null);
             lon.set(row, (HiveDecimal) null);
-
-            members.isNull[row] = true;
 
             Way way = container.getEntity();
 
@@ -208,7 +200,6 @@ public class OrcWriter implements Sink {
         public void process(RelationContainer container) {
             DecimalColumnVector lat = (DecimalColumnVector) batch.cols[3];
             DecimalColumnVector lon = (DecimalColumnVector) batch.cols[4];
-            ListColumnVector nds = (ListColumnVector) batch.cols[5];
             ListColumnVector members = (ListColumnVector) batch.cols[6];
 
             checkLimit();
@@ -218,8 +209,6 @@ public class OrcWriter implements Sink {
             lon.isNull[row] = true;
             lat.set(row, (HiveDecimal) null);
             lon.set(row, (HiveDecimal) null);
-
-            nds.isNull[row] = true;
 
             Relation relation = container.getEntity();
 
