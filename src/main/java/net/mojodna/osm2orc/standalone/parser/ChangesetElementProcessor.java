@@ -10,8 +10,6 @@ import org.openstreetmap.osmosis.xml.v0_6.impl.TagElementProcessor;
 import org.openstreetmap.osmosis.xml.v0_6.impl.TagListener;
 import org.xml.sax.Attributes;
 
-import java.util.List;
-
 public class ChangesetElementProcessor extends BaseElementProcessor implements TagListener {
 
     private ChangesetCallback changesetCallback;
@@ -19,7 +17,7 @@ public class ChangesetElementProcessor extends BaseElementProcessor implements T
     private TagElementProcessor tagElementProcessor;
 
 
-    public ChangesetElementProcessor(BaseElementProcessor parentProcessor, ChangesetCallback changesetCallback) {
+    ChangesetElementProcessor(BaseElementProcessor parentProcessor, ChangesetCallback changesetCallback) {
         super(parentProcessor, true);
         this.changesetCallback = changesetCallback;
         tagElementProcessor = new TagElementProcessor(this, this);

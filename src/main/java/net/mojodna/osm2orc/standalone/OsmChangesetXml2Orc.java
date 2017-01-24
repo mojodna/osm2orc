@@ -25,12 +25,15 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static org.apache.orc.TypeDescription.*;
+import static org.apache.orc.TypeDescription.createBoolean;
+import static org.apache.orc.TypeDescription.createDecimal;
 import static org.apache.orc.TypeDescription.createLong;
+import static org.apache.orc.TypeDescription.createMap;
 import static org.apache.orc.TypeDescription.createString;
+import static org.apache.orc.TypeDescription.createStruct;
+import static org.apache.orc.TypeDescription.createTimestamp;
 
 public class OsmChangesetXml2Orc {
-
     private static final TypeDescription SCHEMA = createStruct()
             .addField(Changeset.ID, createLong())
             .addField("tags", createMap(
@@ -185,6 +188,5 @@ public class OsmChangesetXml2Orc {
         // flush any pending rows
         writer.addRowBatch(batch);
         writer.close();
-
     }
 }

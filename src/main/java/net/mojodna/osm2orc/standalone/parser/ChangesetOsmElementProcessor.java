@@ -11,7 +11,7 @@ public class ChangesetOsmElementProcessor extends SourceElementProcessor {
 
     private ChangesetElementProcessor changesetElementProcessor;
 
-    public ChangesetOsmElementProcessor(ChangesetCallback changesetCallback) {
+    ChangesetOsmElementProcessor(ChangesetCallback changesetCallback) {
         // parentProcessor, sink, enableDateParsing
         super(null, null, true);
 

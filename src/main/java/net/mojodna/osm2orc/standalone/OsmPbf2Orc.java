@@ -2,13 +2,25 @@ package net.mojodna.osm2orc.standalone;
 
 
 import de.topobyte.osm4j.core.access.OsmIterator;
-import de.topobyte.osm4j.core.model.iface.*;
+import de.topobyte.osm4j.core.model.iface.EntityContainer;
+import de.topobyte.osm4j.core.model.iface.OsmEntity;
+import de.topobyte.osm4j.core.model.iface.OsmMetadata;
+import de.topobyte.osm4j.core.model.iface.OsmNode;
+import de.topobyte.osm4j.core.model.iface.OsmRelation;
+import de.topobyte.osm4j.core.model.iface.OsmWay;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
-import org.apache.hadoop.hive.ql.exec.vector.*;
+import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.ListColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.MapColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.StructColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
+import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
@@ -21,9 +33,13 @@ import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static org.apache.orc.TypeDescription.*;
+import static org.apache.orc.TypeDescription.createDecimal;
+import static org.apache.orc.TypeDescription.createList;
 import static org.apache.orc.TypeDescription.createLong;
+import static org.apache.orc.TypeDescription.createMap;
 import static org.apache.orc.TypeDescription.createString;
+import static org.apache.orc.TypeDescription.createStruct;
+import static org.apache.orc.TypeDescription.createTimestamp;
 
 public class OsmPbf2Orc {
     public static void convert(String inputPbf, String outputOrc) throws Exception {
