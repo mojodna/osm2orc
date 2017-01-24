@@ -179,8 +179,10 @@ public class OsmChangesetXml2Orc {
                 ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
                 ++i;
             }
-            System.out.println(count.incrementAndGet() + " changesets converted to orc. id = "
-                    + changeset.getId() + " user=" + changeset.getUser());
+
+            if (count.incrementAndGet()  % 10000 == 0) {
+                System.err.println(count.get());
+            }
         }));
 
         // flush any pending rows
