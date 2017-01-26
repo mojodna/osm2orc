@@ -211,8 +211,6 @@ public class OsmPbf2Orc {
 
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
-                    lat.isNull[row] = true;
-                    lon.isNull[row] = true;
 
                     OsmWay way = (OsmWay) entity;
 
@@ -233,8 +231,6 @@ public class OsmPbf2Orc {
 
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
-                    lat.isNull[row] = true;
-                    lon.isNull[row] = true;
 
                     OsmRelation relation = (OsmRelation) entity;
 
