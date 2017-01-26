@@ -41,6 +41,10 @@ import static org.apache.orc.TypeDescription.createStruct;
 import static org.apache.orc.TypeDescription.createTimestamp;
 
 public class OsmPbf2Orc {
+    private static final byte[] NODE_BYTES = "node".getBytes();
+    private static final byte[] WAY_BYTES = "way".getBytes();
+    private static final byte[] RELATION_BYTES = "relation".getBytes();
+
     public static void convert(InputStream input, String outputOrc) throws Exception {
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
@@ -146,7 +150,6 @@ public class OsmPbf2Orc {
 
             id.vector[row] = entity.getId();
             changeset.vector[row] = metadata.getChangeset();
-            type.setVal(row, container.getType().toString().toLowerCase().getBytes());
 
             synchronized (tags) {
                 tags.offsets[row] = tags.childCount;
@@ -157,8 +160,10 @@ public class OsmPbf2Orc {
 
                 int i = 0;
                 for (Map.Entry<String, String> kv : OsmModelUtil.getTagsAsMap(entity).entrySet()) {
-                    ((BytesColumnVector) tags.keys).setVal((int) tags.offsets[row] + i, kv.getKey().getBytes());
-                    ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
+                    byte[] key = kv.getKey().getBytes();
+                    byte[] val = kv.getValue().getBytes();
+                    ((BytesColumnVector) tags.keys).setRef((int) tags.offsets[row] + i, key, 0, key.length);
+                    ((BytesColumnVector) tags.values).setRef((int) tags.offsets[row] + i, val, 0, val.length);
 
                     ++i;
                 }
@@ -169,7 +174,8 @@ public class OsmPbf2Orc {
 
             uid.vector[row] = metadata.getUid();
 
-            user.setVal(row, metadata.getUser().getBytes());
+            byte[] userBytes = metadata.getUser().getBytes();
+            user.setRef(row, userBytes, 0, userBytes.length);
 
             version.vector[row] = metadata.getVersion();
 
@@ -189,6 +195,8 @@ public class OsmPbf2Orc {
             switch (container.getType()) {
                 default:
                 case Node:
+                    type.setRef(row, NODE_BYTES, 0, NODE_BYTES.length);
+
                     OsmNode node = (OsmNode) entity;
 
                     lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
@@ -197,6 +205,8 @@ public class OsmPbf2Orc {
                     break;
 
                 case Way:
+                    type.setRef(row, WAY_BYTES, 0, WAY_BYTES.length);
+
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
                     lat.isNull[row] = true;
@@ -219,6 +229,8 @@ public class OsmPbf2Orc {
                     break;
 
                 case Relation:
+                    type.setRef(row, RELATION_BYTES, 0, RELATION_BYTES.length);
+
                     lat.set(row, (HiveDecimal) null);
                     lon.set(row, (HiveDecimal) null);
                     lat.isNull[row] = true;
@@ -234,9 +246,29 @@ public class OsmPbf2Orc {
                         for (int j = 0; j < relation.getNumberOfMembers(); j++) {
                             StructColumnVector membersStruct = (StructColumnVector) members.child;
 
-                            ((BytesColumnVector) membersStruct.fields[0]).setVal((int) members.offsets[row] + j, relation.getMember(j).getType().toString().toLowerCase().getBytes());
+                            final byte[] typeBytes;
+                            switch (relation.getMember(j).getType()) {
+                            case Node:
+                                typeBytes = NODE_BYTES;
+                                break;
+
+                            case Way:
+                                typeBytes = WAY_BYTES;
+                                break;
+
+                            case Relation:
+                                typeBytes = RELATION_BYTES;
+                                break;
+
+                            default:
+                                throw new RuntimeException("Unsupported member type: " + relation.getMember(j).getType());
+                            }
+
+                            ((BytesColumnVector) membersStruct.fields[0]).setRef((int) members.offsets[row] + j, typeBytes, 0, typeBytes.length);
                             ((LongColumnVector) membersStruct.fields[1]).vector[(int) members.offsets[row] + j] = relation.getMember(j).getId();
-                            ((BytesColumnVector) membersStruct.fields[2]).setVal((int) members.offsets[row] + j, relation.getMember(j).getRole().getBytes());
+
+                            byte[] roleBytes = relation.getMember(j).getRole().getBytes();
+                            ((BytesColumnVector) membersStruct.fields[2]).setRef((int) members.offsets[row] + j, roleBytes, 0, roleBytes.length);
                         }
                     }
 
