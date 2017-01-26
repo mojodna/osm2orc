@@ -118,7 +118,9 @@ public class OsmPbf2Orc {
         DecimalColumnVector lat = (DecimalColumnVector) batch.cols[3];
         DecimalColumnVector lon = (DecimalColumnVector) batch.cols[4];
         ListColumnVector nds = (ListColumnVector) batch.cols[5];
+        StructColumnVector ndsStruct = (StructColumnVector) nds.child;
         ListColumnVector members = (ListColumnVector) batch.cols[6];
+        StructColumnVector membersStruct = (StructColumnVector) members.child;
         LongColumnVector changeset = (LongColumnVector) batch.cols[7];
         TimestampColumnVector timestamp = (TimestampColumnVector) batch.cols[8];
         LongColumnVector uid = (LongColumnVector) batch.cols[9];
@@ -217,11 +219,9 @@ public class OsmPbf2Orc {
                     synchronized (nds) {
                         nds.lengths[row] = way.getNumberOfNodes();
                         nds.childCount += nds.lengths[row];
-                        nds.child.ensureSize(nds.childCount, nds.offsets[row] != 0);
+                        ndsStruct.ensureSize(nds.childCount, nds.offsets[row] != 0);
 
                         for (int j = 0; j < way.getNumberOfNodes(); j++) {
-                            StructColumnVector ndsStruct = (StructColumnVector) nds.child;
-
                             ((LongColumnVector) ndsStruct.fields[0]).vector[(int) nds.offsets[row] + j] = way.getNodeId(j);
                         }
                     }
@@ -241,11 +241,9 @@ public class OsmPbf2Orc {
                     synchronized (members) {
                         members.lengths[row] = relation.getNumberOfMembers();
                         members.childCount += members.lengths[row];
-                        members.child.ensureSize(members.childCount, members.offsets[row] != 0);
+                        membersStruct.ensureSize(members.childCount, members.offsets[row] != 0);
 
                         for (int j = 0; j < relation.getNumberOfMembers(); j++) {
-                            StructColumnVector membersStruct = (StructColumnVector) members.child;
-
                             final byte[] typeBytes;
                             switch (relation.getMember(j).getType()) {
                             case Node:
