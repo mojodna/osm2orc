@@ -1,2 +1,8 @@
 rootProject.name = 'osm2orc'
 
+include ':osm4j-core'
+
+include 'osm4j-pbf'
+
+include ':osm4j-pbf:core'
+

@@ -29,9 +29,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static org.apache.orc.TypeDescription.createBoolean;
 import static org.apache.orc.TypeDescription.createDecimal;
 import static org.apache.orc.TypeDescription.createList;
 import static org.apache.orc.TypeDescription.createLong;
@@ -41,6 +43,7 @@ import static org.apache.orc.TypeDescription.createStruct;
 import static org.apache.orc.TypeDescription.createTimestamp;
 
 public class OsmPbf2Orc {
+    private static final Logger LOG = Logger.getLogger(OsmPbf2Orc.class.getName());
     private static final byte[] NODE_BYTES = "node".getBytes();
     private static final byte[] WAY_BYTES = "way".getBytes();
     private static final byte[] RELATION_BYTES = "relation".getBytes();
@@ -69,7 +72,8 @@ public class OsmPbf2Orc {
                 .addField("timestamp", createTimestamp())
                 .addField("uid", createLong())
                 .addField("user", createString())
-                .addField("version", createLong());
+                .addField("version", createLong())
+                .addField("visible", createBoolean());
 
 //        TypeDescription deltaSchema = createStruct()
 //                .addField("operation", createInt())
@@ -126,6 +130,7 @@ public class OsmPbf2Orc {
         LongColumnVector uid = (LongColumnVector) batch.cols[9];
         BytesColumnVector user = (BytesColumnVector) batch.cols[10];
         LongColumnVector version = (LongColumnVector) batch.cols[11];
+        LongColumnVector visible = (LongColumnVector) batch.cols[12];
 
         OsmIterator iterator = new PbfIterator(input, true);
         // parallel will make it faster but will produce bigger output files
@@ -180,6 +185,10 @@ public class OsmPbf2Orc {
             user.setRef(row, userBytes, 0, userBytes.length);
 
             version.vector[row] = metadata.getVersion();
+            visible.vector[row] = 1;
+            if (!metadata.isVisible()) {
+                visible.vector[row] = 0;
+            }
 
             synchronized (nds) {
                 nds.offsets[row] = nds.childCount;

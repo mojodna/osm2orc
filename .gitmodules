@@ -1,0 +1,8 @@
+[submodule "osm4j-core"]
+	path = osm4j-core
+	url = https://github.com/mojodna/osm4j-core
+	branch = visible
+[submodule "osm4j-pbf"]
+	path = osm4j-pbf
+	url = https://github.com/mojodna/osm4j-pbf
+	branch = integration
