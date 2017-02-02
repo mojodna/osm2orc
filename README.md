@@ -265,7 +265,7 @@ To convert an OSM PBF to ORC:
 To convert an OSM Changeset XML to ORC:
 
 ``` 
-./osm2orc --changeset <osm-changeset-xml-input> <osm-changeset-orc-output>
+./osm2orc --changesets <osm-changeset-xml-input> <osm-changeset-orc-output>
 ```
 
 ## Develop
