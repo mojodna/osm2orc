@@ -48,7 +48,7 @@ public class OsmPbf2Orc {
     private static final byte[] WAY_BYTES = "way".getBytes();
     private static final byte[] RELATION_BYTES = "relation".getBytes();
 
-    public static void convert(InputStream input, String outputOrc, boolean history) throws Exception {
+    public static void convert(InputStream input, String outputOrc, boolean history) throws IOException {
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
                 .addField("type", createString())
