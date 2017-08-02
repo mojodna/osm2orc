@@ -248,7 +248,7 @@ Now, cd into the distribution directory and untar:
 
 ```bash
 cd build/distributions
-tar xzvf osm2orc-1.0-SNAPSHOT.tar
+tar xf osm2orc-1.0-SNAPSHOT.tar
 cd osm2orc-1.0-SNAPSHOT/bin
 ```
 
