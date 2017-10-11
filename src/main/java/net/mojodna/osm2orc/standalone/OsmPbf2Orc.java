@@ -1,6 +1,8 @@
 package net.mojodna.osm2orc.standalone;
 
 
+import net.mojodna.osm2orc.OrcUtils;
+
 import de.topobyte.osm4j.core.access.OsmIterator;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
 import de.topobyte.osm4j.core.model.iface.OsmEntity;
@@ -10,8 +12,6 @@ import de.topobyte.osm4j.core.model.iface.OsmRelation;
 import de.topobyte.osm4j.core.model.iface.OsmWay;
 import de.topobyte.osm4j.core.model.util.OsmModelUtil;
 import de.topobyte.osm4j.pbf.seq.PbfIterator;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
@@ -91,11 +91,7 @@ public class OsmPbf2Orc {
 //                .addField("currentTransaction", createLong())
 //                .addField("row", schema);
 
-
-        Configuration conf = new Configuration();
-//        conf.set(OrcConf.BLOOM_FILTER_COLUMNS.getAttribute(), "tags");
-        Writer writer = OrcFile.createWriter(new Path(outputOrc),
-                OrcFile.writerOptions(conf).setSchema(schema));
+        Writer writer = OrcUtils.createWriter(outputOrc, schema);
 
 //        writer.addUserMetadata("bbox", null);
 //        // TODO osm.schema.version = 0.6
