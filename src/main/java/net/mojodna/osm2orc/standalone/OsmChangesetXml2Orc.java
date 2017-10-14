@@ -141,7 +141,7 @@ public class OsmChangesetXml2Orc {
             String minLonStr = changeset.getMinLon();
             String maxLonStr = changeset.getMaxLon();
             if (minLatStr != null) {
-                minLat.set(row, HiveDecimal.create(new BigDecimal(maxLatStr)));
+                minLat.set(row, HiveDecimal.create(new BigDecimal(minLatStr)));
             } else {
                 minLat.set(row, (HiveDecimal) null);
                 minLat.isNull[row] = true;
