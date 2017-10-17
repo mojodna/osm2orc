@@ -19,7 +19,8 @@ CREATE EXTERNAL TABLE planet (
     timestamp TIMESTAMP,
     uid BIGINT,
     user STRING,
-    version BIGINT
+    version BIGINT,
+    visible BOOLEAN
 )
 STORED AS ORCFILE
 LOCATION 's3://osm-pds/planet/';

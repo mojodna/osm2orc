@@ -11,7 +11,7 @@ import java.util.List;
 public class Osm2Orc {
     public static void main(String[] args) throws Exception {
         if (args.length < 2) {
-            System.err.println("Usage: osm2orc [--changesets] [--history] <input> <output>");
+            System.err.println("Usage: osm2orc [--changesets] <input> <output>");
             System.exit(1);
         }
 
@@ -30,21 +30,13 @@ public class Osm2Orc {
 
         final InputStream inputStream;
 
-        boolean history = false;
-
-        if (args[0].equals("--history")) {
-            history = true;
-            List<String> argList = Arrays.asList(args);
-            args = argList.subList(1, argList.size()).toArray(args);
-        }
-
         if (args[0].equals("-")) {
             inputStream = System.in;
         } else {
             inputStream = new FileInputStream(args[0]);
         }
 
-        OsmPbf2Orc.convert(inputStream, args[1], history);
+        OsmPbf2Orc.convert(inputStream, args[1]);
         System.exit(0);
     }
 }
