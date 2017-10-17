@@ -48,7 +48,7 @@ public class OsmPbf2Orc {
     private static final byte[] WAY_BYTES = "way".getBytes();
     private static final byte[] RELATION_BYTES = "relation".getBytes();
 
-    public static void convert(InputStream input, String outputOrc, boolean history) throws IOException {
+    public static void convert(InputStream input, String outputOrc) throws IOException {
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
                 .addField("type", createString())
@@ -72,11 +72,8 @@ public class OsmPbf2Orc {
                 .addField("timestamp", createTimestamp())
                 .addField("uid", createLong())
                 .addField("user", createString())
-                .addField("version", createLong());
-
-        if (history) {
-            schema.addField("visible", createBoolean());
-        }
+                .addField("version", createLong())
+                .addField("visible", createBoolean());
 
 //        TypeDescription deltaSchema = createStruct()
 //                .addField("operation", createInt())
@@ -133,13 +130,7 @@ public class OsmPbf2Orc {
         LongColumnVector uid = (LongColumnVector) batch.cols[9];
         BytesColumnVector user = (BytesColumnVector) batch.cols[10];
         LongColumnVector version = (LongColumnVector) batch.cols[11];
-        final LongColumnVector visible;
-
-        if (history) {
-            visible = (LongColumnVector) batch.cols[12];
-        } else {
-            visible = null;
-        }
+        LongColumnVector visible = (LongColumnVector) batch.cols[12];
 
         OsmIterator iterator = new PbfIterator(input, true);
         // parallel will make it faster but will produce bigger output files
@@ -195,11 +186,10 @@ public class OsmPbf2Orc {
 
             version.vector[row] = metadata.getVersion();
 
-            if (history) {
+            if (!metadata.isVisible()) {
+                visible.vector[row] = 0;
+            } else {
                 visible.vector[row] = 1;
-                if (!metadata.isVisible()) {
-                    visible.vector[row] = 0;
-                }
             }
 
             synchronized (nds) {
