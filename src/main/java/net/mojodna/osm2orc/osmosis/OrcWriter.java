@@ -1,7 +1,7 @@
 package net.mojodna.osm2orc.osmosis;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
+import net.mojodna.osm2orc.OrcUtils;
+
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
@@ -247,10 +247,8 @@ public class OrcWriter implements Sink {
     @Override
     public void initialize(Map<String, Object> metaData) {
         try {
-            Configuration conf = new Configuration();
-            // conf.set(OrcConf.BLOOM_FILTER_COLUMNS.getAttribute(), "tags");
-            processor = new OrcEntityProcessor(OrcFile.createWriter(new Path(filename),
-                    OrcFile.writerOptions(conf).setSchema(SCHEMA)), SCHEMA.createRowBatch());
+            processor = new OrcEntityProcessor(OrcUtils.createWriter(filename, SCHEMA),
+                                               SCHEMA.createRowBatch());
         } catch (IOException e) {
             throw new OsmosisRuntimeException(e);
         }

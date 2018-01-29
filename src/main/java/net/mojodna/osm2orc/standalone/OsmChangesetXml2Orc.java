@@ -1,10 +1,10 @@
 package net.mojodna.osm2orc.standalone;
 
 
+import net.mojodna.osm2orc.OrcUtils;
 import net.mojodna.osm2orc.standalone.model.Changeset;
 import net.mojodna.osm2orc.standalone.parser.ChangesetXmlHandler;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
+
 import org.apache.hadoop.hive.common.type.HiveDecimal;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.DecimalColumnVector;
@@ -61,9 +61,7 @@ public class OsmChangesetXml2Orc {
 
     public void convert() throws Exception {
         // Setup ORC writer
-        Configuration conf = new Configuration();
-        Writer writer = OrcFile.createWriter(new Path(outputOrc),
-                OrcFile.writerOptions(conf).setSchema(SCHEMA));
+        Writer writer = OrcUtils.createWriter(outputOrc, SCHEMA);
 
         // Setup ORC vectors
         VectorizedRowBatch batch = SCHEMA.createRowBatch();
