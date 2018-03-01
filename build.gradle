@@ -20,8 +20,8 @@ dependencies {
     compile group: 'de.topobyte', name: 'osm4j-pbf', version: '0.1.0'
     compile group: 'de.topobyte', name: 'osm4j-core', version: '0.1.0'
     compile group: 'org.apache.orc', name: 'orc-core', version: '1.4.3'
-    compile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.44.1'
-    compile group: 'org.openstreetmap.osmosis', name: 'osmosis-xml', version: '0.44.1'
+    compile group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.46'
+    compile group: 'org.openstreetmap.osmosis', name: 'osmosis-xml', version: '0.46'
 
     runtime group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.0.0'
     runtime files('conf')

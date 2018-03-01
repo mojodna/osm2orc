@@ -268,6 +268,6 @@ public class OrcWriter implements Sink {
     }
 
     @Override
-    public void release() {
+    public void close() {
     }
 }
