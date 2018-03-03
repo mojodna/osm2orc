@@ -194,6 +194,8 @@ public class OsmPbf2Orc {
             // changesets can be open/closed, have a created_at (same as timestamp?), and a bbox (4 values)
             switch (container.getType()) {
                 default:
+                    break;
+
                 case Node:
                     type.setRef(row, NODE_BYTES, 0, NODE_BYTES.length);
 
