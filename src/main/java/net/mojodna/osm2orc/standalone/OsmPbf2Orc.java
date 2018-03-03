@@ -77,20 +77,6 @@ public class OsmPbf2Orc {
                 .addField("version", createLong())
                 .addField("visible", createBoolean());
 
-//        TypeDescription deltaSchema = createStruct()
-//                .addField("operation", createInt())
-//                // transaction id of the base
-//                .addField("originalTransaction", createLong())
-//                // bucket after hashing the column being clustered
-//                .addField("bucket", createInt())
-//                // index into entire dataset (row in stripe + row base in stripe + first row)
-//                // could also be initialized when writing and incremented when creating each row (like row)
-//                .addField("rowId", createLong())
-//                // delta transaction id
-//                .addField("currentTransaction", createLong())
-//                .addField("row", schema);
-
-
         Configuration conf = new Configuration();
 //        conf.set(OrcConf.BLOOM_FILTER_COLUMNS.getAttribute(), "tags");
         Writer writer = OrcFile.createWriter(new Path(outputOrc),
