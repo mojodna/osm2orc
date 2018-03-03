@@ -240,20 +240,20 @@ public class OsmPbf2Orc {
                         for (int j = 0; j < relation.getNumberOfMembers(); j++) {
                             final byte[] typeBytes;
                             switch (relation.getMember(j).getType()) {
-                            case Node:
-                                typeBytes = NODE_BYTES;
-                                break;
+                                case Node:
+                                    typeBytes = NODE_BYTES;
+                                    break;
 
-                            case Way:
-                                typeBytes = WAY_BYTES;
-                                break;
+                                case Way:
+                                    typeBytes = WAY_BYTES;
+                                    break;
 
-                            case Relation:
-                                typeBytes = RELATION_BYTES;
-                                break;
+                                case Relation:
+                                    typeBytes = RELATION_BYTES;
+                                    break;
 
-                            default:
-                                throw new RuntimeException("Unsupported member type: " + relation.getMember(j).getType());
+                                default:
+                                    throw new RuntimeException("Unsupported member type: " + relation.getMember(j).getType());
                             }
 
                             ((BytesColumnVector) membersStruct.fields[0]).setRef((int) members.offsets[row] + j, typeBytes, 0, typeBytes.length);
