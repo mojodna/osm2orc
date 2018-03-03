@@ -3,6 +3,7 @@ package net.mojodna.osm2orc.standalone;
 
 import de.topobyte.osm4j.core.access.OsmIterator;
 import de.topobyte.osm4j.core.model.iface.EntityContainer;
+import de.topobyte.osm4j.core.model.iface.OsmBounds;
 import de.topobyte.osm4j.core.model.iface.OsmEntity;
 import de.topobyte.osm4j.core.model.iface.OsmMetadata;
 import de.topobyte.osm4j.core.model.iface.OsmNode;
@@ -28,6 +29,7 @@ import org.apache.orc.Writer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -94,25 +96,15 @@ public class OsmPbf2Orc {
         Writer writer = OrcFile.createWriter(new Path(outputOrc),
                 OrcFile.writerOptions(conf).setSchema(schema));
 
-//        writer.addUserMetadata("bbox", null);
-//        // TODO osm.schema.version = 0.6
-//        writer.addUserMetadata("OsmSchema-V0.6", null);
-//        writer.addUserMetadata("required_features", null);
+        writer.addUserMetadata("osm.schema.version", ByteBuffer.wrap("0.6".getBytes()));
+
 //        writer.addUserMetadata("HistoricalInformation", null);
-//        writer.addUserMetadata("has_metadata", null);
 //        writer.addUserMetadata("Sort.Type_then_ID", null);
 //        writer.addUserMetadata("Sort.Geographic", null);
 //        // see "What are the replication fields for?" in https://wiki.openstreetmap.org/wiki/PBF_Format
 //        writer.addUserMetadata("replication_timestamp", null);
 //        writer.addUserMetadata("replication_sequence_number", null);
 //        writer.addUserMetadata("replication_base_url", null);
-//        // to allow conversion of decimals into ints and avoid hard-coding the precision
-//        writer.addUserMetadata("granularity", null);
-//        // false easting
-//        writer.addUserMetadata("x_offset", null);
-//        // false northing
-//        writer.addUserMetadata("y_offset", null);
-
 
         VectorizedRowBatch batch = schema.createRowBatch();
 
@@ -135,6 +127,11 @@ public class OsmPbf2Orc {
         OsmIterator iterator = new PbfIterator(input, true);
         // parallel will make it faster but will produce bigger output files
         Stream<EntityContainer> entityStream = StreamSupport.stream(iterator.spliterator(), false);
+
+        if (iterator.hasBounds()) {
+            OsmBounds bounds = iterator.getBounds();
+            writer.addUserMetadata("bounds", ByteBuffer.wrap((bounds.getLeft() + ", " + bounds.getBottom() + ", " + bounds.getRight() + ", " + bounds.getTop()).getBytes()));
+        }
 
         entityStream.forEach(container -> {
             OsmEntity entity = container.getEntity();
