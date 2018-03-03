@@ -29,7 +29,6 @@ import org.apache.orc.Writer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -187,6 +186,9 @@ public class OsmPbf2Orc {
                 members.lengths[row] = 0;
             }
 
+            lat.set(row, (HiveDecimal) null);
+            lon.set(row, (HiveDecimal) null);
+
             // TODO changeset, in which case lat/lon need to be zeroed out
             // changesets also include discussion, which is a list of comments (date, uid, user, text)
             // changesets can be open/closed, have a created_at (same as timestamp?), and a bbox (4 values)
@@ -198,25 +200,18 @@ public class OsmPbf2Orc {
                     OsmNode node = (OsmNode) entity;
 
                     // sometimes these have invalid values, e.g. 214.7483647
-                    if (node.getLatitude() == 214.74836470000002) {
-                        lat.set(row, (HiveDecimal) null);
-                    } else {
-                        lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
+                    if (node.getLatitude() != 214.74836470000002) {
+                        lat.set(row, HiveDecimal.create(node.getLatitude()));
                     }
 
-                    if (node.getLatitude() == 214.74836470000002) {
-                        lon.set(row, (HiveDecimal) null);
-                    } else {
-                        lon.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLongitude())));
+                    if (node.getLongitude() != 214.74836470000002) {
+                        lon.set(row, HiveDecimal.create(node.getLongitude()));
                     }
 
                     break;
 
                 case Way:
                     type.setRef(row, WAY_BYTES, 0, WAY_BYTES.length);
-
-                    lat.set(row, (HiveDecimal) null);
-                    lon.set(row, (HiveDecimal) null);
 
                     OsmWay way = (OsmWay) entity;
 
@@ -234,9 +229,6 @@ public class OsmPbf2Orc {
 
                 case Relation:
                     type.setRef(row, RELATION_BYTES, 0, RELATION_BYTES.length);
-
-                    lat.set(row, (HiveDecimal) null);
-                    lon.set(row, (HiveDecimal) null);
 
                     OsmRelation relation = (OsmRelation) entity;
 
