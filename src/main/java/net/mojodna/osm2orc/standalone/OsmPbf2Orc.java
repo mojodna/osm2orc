@@ -212,8 +212,18 @@ public class OsmPbf2Orc {
 
                     OsmNode node = (OsmNode) entity;
 
-                    lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
-                    lon.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLongitude())));
+                    // sometimes these have invalid values, e.g. 214.7483647
+                    if (node.getLatitude() == 214.74836470000002) {
+                        lat.set(row, (HiveDecimal) null);
+                    } else {
+                        lat.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLatitude())));
+                    }
+
+                    if (node.getLatitude() == 214.74836470000002) {
+                        lon.set(row, (HiveDecimal) null);
+                    } else {
+                        lon.set(row, HiveDecimal.create(BigDecimal.valueOf(node.getLongitude())));
+                    }
 
                     break;
 
