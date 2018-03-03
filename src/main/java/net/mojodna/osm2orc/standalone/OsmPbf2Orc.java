@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.ql.exec.vector.MapColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.StructColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.orc.OrcConf;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
@@ -78,6 +79,7 @@ public class OsmPbf2Orc {
                 .addField("visible", createBoolean());
 
         Configuration conf = new Configuration();
+        conf.setBoolean(OrcConf.BLOCK_PADDING.getAttribute(), false);
 //        conf.set(OrcConf.BLOOM_FILTER_COLUMNS.getAttribute(), "tags");
         Writer writer = OrcFile.createWriter(new Path(outputOrc),
                 OrcFile.writerOptions(conf).setSchema(schema));
