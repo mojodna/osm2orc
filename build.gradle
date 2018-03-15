@@ -24,6 +24,7 @@ dependencies {
     compile group: 'org.openstreetmap.osmosis', name: 'osmosis-xml', version: '0.46'
 
     runtime group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.0.0'
+    runtime group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.0.0'
     runtime files('conf')
 }
 
