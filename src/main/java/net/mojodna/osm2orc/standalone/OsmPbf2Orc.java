@@ -201,12 +201,11 @@ public class OsmPbf2Orc {
 
                     OsmNode node = (OsmNode) entity;
 
-                    // sometimes these have invalid values, e.g. 214.7483647
-                    if (node.getLatitude() != 214.74836470000002) {
+                    if (!Double.isNaN(node.getLatitude())) {
                         lat.set(row, HiveDecimal.create(node.getLatitude()));
                     }
 
-                    if (node.getLongitude() != 214.74836470000002) {
+                    if (!Double.isNaN(node.getLongitude())) {
                         lon.set(row, HiveDecimal.create(node.getLongitude()));
                     }
 
