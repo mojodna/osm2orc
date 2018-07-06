@@ -12,6 +12,7 @@ import org.apache.hadoop.hive.ql.exec.vector.LongColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.MapColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.TimestampColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
+import org.apache.orc.OrcConf;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
@@ -62,6 +63,7 @@ public class OsmChangesetXml2Orc {
     public void convert() throws Exception {
         // Setup ORC writer
         Configuration conf = new Configuration();
+        conf.setBoolean(OrcConf.BLOCK_PADDING.getAttribute(), false);
         Writer writer = OrcFile.createWriter(new Path(outputOrc),
                 OrcFile.writerOptions(conf).setSchema(SCHEMA));
 
