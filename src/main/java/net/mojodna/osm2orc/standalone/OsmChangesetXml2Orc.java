@@ -179,10 +179,6 @@ public class OsmChangesetXml2Orc {
                 ((BytesColumnVector) tags.values).setVal((int) tags.offsets[row] + i, kv.getValue().getBytes());
                 ++i;
             }
-
-            if (count.incrementAndGet()  % 10000 == 0) {
-                System.err.println(count.get());
-            }
         }));
 
         // flush any pending rows
