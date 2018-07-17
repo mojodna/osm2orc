@@ -16,11 +16,16 @@ import org.apache.orc.OrcConf;
 import org.apache.orc.OrcFile;
 import org.apache.orc.TypeDescription;
 import org.apache.orc.Writer;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -86,7 +91,7 @@ public class OsmChangesetXml2Orc {
         // Parse Changeset XML
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 
-        parser.parse(inputStream, new ChangesetXmlHandler(changeset -> {
+        parser.parse(new InputSource(new InputStreamReader(inputStream, "UTF-8")), new ChangesetXmlHandler(changeset -> {
             int row;
             if (batch.size == batch.getMaxSize()) {
                 try {
@@ -168,7 +173,7 @@ public class OsmChangesetXml2Orc {
 
             // tags
             tags.offsets[row] = tags.childCount;
-            Map<String,String> _tags = changeset.getTags();
+            Map<String, String> _tags = changeset.getTags();
             tags.lengths[row] = _tags.size();
             tags.childCount += tags.lengths[row];
             tags.keys.ensureSize(tags.childCount, tags.offsets[row] != 0);
