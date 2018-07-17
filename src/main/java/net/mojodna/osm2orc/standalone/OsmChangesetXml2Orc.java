@@ -86,8 +86,6 @@ public class OsmChangesetXml2Orc {
         // Parse Changeset XML
         SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
 
-        final AtomicLong count = new AtomicLong(0);
-
         parser.parse(inputStream, new ChangesetXmlHandler(changeset -> {
             int row;
             if (batch.size == batch.getMaxSize()) {
