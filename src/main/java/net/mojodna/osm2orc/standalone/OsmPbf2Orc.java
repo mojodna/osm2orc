@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -51,6 +52,9 @@ public class OsmPbf2Orc {
     private static final byte[] RELATION_BYTES = "relation".getBytes();
 
     public static void convert(InputStream input, String outputOrc) throws IOException {
+        // set the active timezone to UTC to avoid unexpected conversions
+        TimeZone.setDefault(TimeZone.getTimeZone("Etc/UTC"));
+
         TypeDescription schema = createStruct()
                 .addField("id", createLong())
                 .addField("type", createString())
