@@ -15,14 +15,16 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'de.topobyte', name: 'osm4j-pbf', version: '0.1.1'
-    implementation group: 'de.topobyte', name: 'osm4j-core', version: '0.1.0'
-    implementation group: 'org.apache.orc', name: 'orc-core', version: '1.4.3'
-    implementation group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.46'
-    implementation group: 'org.openstreetmap.osmosis', name: 'osmosis-xml', version: '0.46'
+    implementation group: 'de.topobyte', name: 'osm4j-pbf', version: '1.2.0'
+    implementation group: 'de.topobyte', name: 'osm4j-core', version: '1.2.0'
+    implementation group: 'org.apache.orc', name: 'orc-core', version: '1.8.4'
+    implementation group: 'org.openstreetmap.osmosis', name: 'osmosis-core', version: '0.48.3'
+    implementation group: 'org.openstreetmap.osmosis', name: 'osmosis-xml', version: '0.48.3'
+    implementation group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.3.6'
 
-    runtimeOnly group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.0.0'
-    runtimeOnly group: 'org.apache.hadoop', name: 'hadoop-common', version: '3.0.0'
+    runtimeOnly group: 'org.apache.hadoop', name: 'hadoop-aws', version: '3.3.6'
+    runtimeOnly group: 'org.apache.hadoop', name: 'hadoop-hdfs-client', version: '3.3.6'
+
     runtimeOnly files('conf')
 }
 
