@@ -1,5 +1,5 @@
 group 'net.mojodna.osm2orc'
-version '0.5.5'
+version '0.6.0'
 
 apply plugin: 'java'
 apply plugin: 'application'
