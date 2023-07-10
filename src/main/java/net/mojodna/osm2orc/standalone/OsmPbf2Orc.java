@@ -190,9 +190,6 @@ public class OsmPbf2Orc {
                 members.lengths[row] = 0;
             }
 
-            lat.set(row, (HiveDecimal) null);
-            lon.set(row, (HiveDecimal) null);
-
             // TODO changeset, in which case lat/lon need to be zeroed out
             // changesets also include discussion, which is a list of comments (date, uid, user, text)
             // changesets can be open/closed, have a created_at (same as timestamp?), and a bbox (4 values)
@@ -205,11 +202,15 @@ public class OsmPbf2Orc {
 
                     OsmNode node = (OsmNode) entity;
 
-                    if (!Double.isNaN(node.getLatitude())) {
+                    if (Double.isNaN(node.getLatitude())) {
+                        lat.set(row, (HiveDecimal) null);
+                    } else {
                         lat.set(row, HiveDecimal.create(node.getLatitude()));
                     }
 
-                    if (!Double.isNaN(node.getLongitude())) {
+                    if (Double.isNaN(node.getLongitude())) {
+                        lon.set(row, (HiveDecimal) null);
+                    } else {
                         lon.set(row, HiveDecimal.create(node.getLongitude()));
                     }
 
@@ -219,6 +220,9 @@ public class OsmPbf2Orc {
                     type.setRef(row, WAY_BYTES, 0, WAY_BYTES.length);
 
                     OsmWay way = (OsmWay) entity;
+
+                    lat.set(row, (HiveDecimal) null);
+                    lon.set(row, (HiveDecimal) null);
 
                     synchronized (nds) {
                         nds.lengths[row] = way.getNumberOfNodes();
@@ -236,6 +240,9 @@ public class OsmPbf2Orc {
                     type.setRef(row, RELATION_BYTES, 0, RELATION_BYTES.length);
 
                     OsmRelation relation = (OsmRelation) entity;
+
+                    lat.set(row, (HiveDecimal) null);
+                    lon.set(row, (HiveDecimal) null);
 
                     synchronized (members) {
                         members.lengths[row] = relation.getNumberOfMembers();
