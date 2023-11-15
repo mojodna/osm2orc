@@ -2,7 +2,7 @@
 
 Transcodes [OSM PBF files](https://wiki.openstreetmap.org/wiki/PBF_Format) to [ORC](http://orc.apache.org/).
 
-Sample outputs are also available via S3 for querying with AWS Athena.
+Sample outputs are also available via Amazon S3 for querying with AWS Athena.
 
 ## Schema
 
@@ -66,9 +66,10 @@ STORED AS ORCFILE
 LOCATION 's3://osm-pds/changesets/';
 ```
 
-**NOTE**: `osm-pds` is in AWS's `us-east-1` region, so please make sure that you're using Athena in the same region, for both performance and cost reasons.
+**NOTE**: `osm-pds` is in AWS's `us-east-1` region, so please ensure that
+you're using Athena in the same region, for both performance and cost reasons.
 
-The schemas should also work with Presto, Spark, and Hive, although the location protocol may need to be changed to `s3a:` and `hadoop-aws-2.7.3.jar` and `aws-java-sdk-1.7.4.jar` (*not* the latest) must be available in your `CLASSPATH`.
+The schemas should also work with Presto, Trino, Spark, and Hive.
 
 ## Sample Queries
 
@@ -212,7 +213,8 @@ WITH latest AS (
 SELECT count(*) FROM latest
 ```
 
-Count how many changesets have a comment tag (h/t [ToeBee/ChangesetMD](https://github.com/ToeBee/ChangesetMD)):
+Count how many changesets have a comment tag (h/t
+ToeBee/ChangesetMD](https://github.com/ToeBee/ChangesetMD)):
 
 ```sql
 SELECT count(*)
@@ -242,31 +244,32 @@ WHERE min_lon BETWEEN -74.0474545 AND -74.0433990
 ## Build
 
 ```bash
-./gradlew distTar
+./gradlew installDist
 ```
 
-Now, cd into the distribution directory and untar:
-
-```bash
-cd build/distributions
-tar xf osm2orc-1.0-SNAPSHOT.tar
-cd osm2orc-1.0-SNAPSHOT/bin
-```
-
-Your executable is in the `bin/` directory of your distribution.
+This will package up the application into `build/install`.
 
 ## Run
 
 To convert an OSM PBF to ORC:
 
+```bash
+build/install/osm2orc/bin/osm2orc <osm-pbf-input> <osm-orc-output>
 ```
-./osm2orc <osm-pbf-input> <osm-orc-output>
+
+`osm2orc` supports reading from `stdin` and writing to Hadoop-supported
+filesystems (like Amazon S3), so you can transcode large OSM PBFs without
+touching the local disk:
+
+```bash
+curl https://example.com/path/to.osm.pbf | \
+  build/install/osm2orc/bin/osm2orc - s3a://bucket/path/to.osm.orc
 ```
 
 To convert an OSM Changeset XML to ORC:
 
-``` 
-./osm2orc --changesets <osm-changeset-xml-input> <osm-changeset-orc-output>
+```bash
+build/install/osm2orc/bin/osm2orc --changesets <osm-changeset-xml-input> <osm-changeset-orc-output>
 ```
 
 ## Develop
@@ -290,27 +293,13 @@ The tool needs at least an input and output path as described above.
 ## Osmosis Plugin
 
 ```bash
-gradle jar
-cp builds/libs/osm2orc-1.0-SNAPSHOT.jar $OSMOSIS_HOME/lib/default
+./gradlew jar
+cp build/libs/osm2orc-0.6.1-all.jar $OSMOSIS_HOME/lib/default
 
 osmosis --rbf delaware-latest.osm.pbf --write-orc delaware.orc
 osmosis --rb history-161205.osm.pbf --write-orc planet.osh.orc
 osmosis --read-xml-change 694.osc.gz --convert-change-to-full-history --write-orc 694.osc.orc
 ```
 
-The following dependencies (available from a `distZip`) also need to be copied to `$OSMOSIS_HOME/lib/default` (TODO create a plugin jar that only contains osm2orc + these):
-
-* `aircompressor-0.3.jar`
-* `commons-collections-3.2.2.jar`
-* `commons-configuration-1.6.jar`
-* `commons-lang-2.6.jar`
-* `guava-16.0.1.jar`
-* `hadoop-auth-2.6.4.jar`
-* `hadoop-common-2.6.4.jar`
-* `hive-storage-api-2.2.0.jar`
-* `log4j-1.2.17.jar`
-* `orc-core-1.3.0.jar`
-* `slf4j-api-1.7.10.jar`
-* `slf4j-log4j12-1.7.5.jar`
-
-`OSMOSIS_HOME` when installed via [Homebrew](https://brew.sh) is `/usr/local/opt/osmosis/libexec`.
+`OSMOSIS_HOME`, when installed via [Homebrew](https://brew.sh), is `$(brew
+--prefix)/opt/osmosis/libexec`.
